@@ -11,23 +11,27 @@ public class Spims {
         String sourceFile = "";
         //Single argument given                                                                                                                                                                                                    
         if (args.length < 4) {
-        	//TODO Modify this to have more information
-        	System.err.println("ERROR! ERROR! WILL SELF DESTRUCT IN 5 SECONDS!");
+        	//TODO Modify this to have more information for errors
+        	System.err.println("ERROR! ERROR! NOT ENOUGH INPUTS!\n"+
+        					   "WILL SELF DESTRUCT IN 5 SECONDS!");
+        	return;
         }
-		if (args.length >= 4) {
+        //TODO Modify to take in more arguments and check validity/flags
+		if (args.length == 4) {
 			//args[0] should be -p
 			patternFile = args[1];
 			//args3 should be -s
 			sourceFile = args[3];
         }
-		//String patternFileExtension = patternFile.substring(patternFile.length() - 3); 
-		if (!(patternFile.toLowerCase().endsWith("png") ||
-			  patternFile.toLowerCase().endsWith("gif") ||
-			  patternFile.toLowerCase().endsWith("jpg")) ||
-			!(sourceFile.toLowerCase().endsWith("png") ||
-			  sourceFile.toLowerCase().endsWith("gif") ||
-			  sourceFile.toLowerCase().endsWith("jpg"))) {
+		//TODO Separate input and output into two if statements to have better error messages 
+		if (!(patternFile.toLowerCase().endsWith(".png") ||
+			  patternFile.toLowerCase().endsWith(".gif") ||
+			  patternFile.toLowerCase().endsWith(".jpg")) ||
+			!(sourceFile.toLowerCase().endsWith(".png") ||
+			  sourceFile.toLowerCase().endsWith(".gif") ||
+			  sourceFile.toLowerCase().endsWith(".jpg"))) {
 			System.err.println("ERROR! ERROR! WRONG FILE EXTENSION!!!");
+			return;
 		}
         //Multiple arguments given, check for '-r' flag                                                                                                                                                                            
         else if (args.length >= 2) {
