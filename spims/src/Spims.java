@@ -6,36 +6,52 @@ public class Spims {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String inputFile = "";
-        boolean reduce = false;
+		// 
+		String patternFile = "";
+        String sourceFile = "";
         //Single argument given                                                                                                                                                                                                    
-        if (args.length == 1) {
-                inputFile = args[0];
+        if (args.length < 4) {
+        	//TODO Modify this to have more information
+        	System.err.println("ERROR! ERROR! WILL SELF DESTRUCT IN 5 SECONDS!");
         }
+		if (args.length >= 4) {
+			//args[0] should be -p
+			patternFile = args[1];
+			//args3 should be -s
+			sourceFile = args[3];
+        }
+		//String patternFileExtension = patternFile.substring(patternFile.length() - 3); 
+		if (!(patternFile.toLowerCase().endsWith("png") ||
+			  patternFile.toLowerCase().endsWith("gif") ||
+			  patternFile.toLowerCase().endsWith("jpg")) &&
+			!(sourceFile.toLowerCase().endsWith("png") ||
+			  sourceFile.toLowerCase().endsWith("gif") ||
+			  sourceFile.toLowerCase().endsWith("jpg"))) {
+			System.err.println("ERROR! ERROR! WRONG FILE EXTENSION!!!");
+		}
         //Multiple arguments given, check for '-r' flag                                                                                                                                                                            
         else if (args.length >= 2) {
-                inputFile = args[1];
+        	patternFile = args[1];
         }
         else {
-                System.err.println("Invalid command, one or more arguments required.");
-                return;
+        	System.err.println("Invalid command, one or more arguments required.");
+        	return;
         }
         try{
-                //Open FileReader to view file contents                                                                                                                                                                            
-                FileReader fr = new FileReader(inputFile);
-                String inputString = new BufferedReader(fr).readLine();
+                
+        	//Open FileReader to view file contents                                                                                                                                                                            
+                //FileReader fr = new FileReader(inputFile);
+                //String inputString = new BufferedReader(fr).readLine();
                 //Call parse function on the input and pass in the reduce flag bit                                                                                                                                                 
                 //String prefix = Prefixer.parseInfix(inputString, reduce);
                 //Print the input string before and after to the console                                                                                                                                                           
-                System.out.println(inputString + " -> " + prefix);
+                System.out.println("result");
                 //Close FileReader                                                                                                                                                                                                 
-                fr.close();
+                //fr.close();
         }
         catch (Exception e){
                 System.err.println("Error: " + e.getMessage());
         }
-}
 	}
 
 }
