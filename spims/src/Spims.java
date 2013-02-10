@@ -1,4 +1,4 @@
-import java.io.*;
+import java.io.*; //??? not sure
 
 public class Spims {
 
@@ -23,7 +23,7 @@ public class Spims {
 		//String patternFileExtension = patternFile.substring(patternFile.length() - 3); 
 		if (!(patternFile.toLowerCase().endsWith("png") ||
 			  patternFile.toLowerCase().endsWith("gif") ||
-			  patternFile.toLowerCase().endsWith("jpg")) &&
+			  patternFile.toLowerCase().endsWith("jpg")) ||
 			!(sourceFile.toLowerCase().endsWith("png") ||
 			  sourceFile.toLowerCase().endsWith("gif") ||
 			  sourceFile.toLowerCase().endsWith("jpg"))) {
