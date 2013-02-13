@@ -64,19 +64,19 @@ public class Spims {
 	//Method to check if pattern matches exactly the base image
 	
 	//Call this if same size arrays and arrays within are same length
-	public void compareExact(Array[] pattern, Array[] source) {
+	public void compareExact(int[][] pattern, int[][] source) {
 		
 	}
 	
 	//TODO Implement
 	//Method to check if patternis a cropped version of source
-	public void compareNoResize(Array[] pattern, Array[] source) {	
+	public void compareNoResize(int[][] pattern, int[][] source) {	
 		
 	}
 	
 	//TODO Implement
 	//Else - LOOOOONG check
-	public void compareFull(Array[] pattern, Array[] source) {
+	public void compareFull(int[][] pattern, int[][] source) {
 		
 	}
 	
