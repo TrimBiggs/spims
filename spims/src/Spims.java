@@ -7,6 +7,12 @@ public class Pixel {
         r = (p & 0xFF0000) >> 16;
     }
 
+    public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
+        return (abs(a.r - b.r) <= tolerance) &&
+               (abs(a.g - b.g) <= tolerance) &&
+               (abs(a.b - b.b) <= tolerance);
+    }
+
     public int r;
     public int g;
     public int b;
