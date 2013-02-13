@@ -57,5 +57,49 @@ public class Spims {
                 System.err.println("Error: " + e.getMessage());
         }
 	}
+	
+	
+	
+	//TODO Implement
+	//Method to check if pattern matches exactly the base image
+	
+	//Call this if same size arrays and arrays within are same length
+	public void compareExact(Array[] pattern, Array[] source) {
+		
+	}
+	
+	//TODO Implement
+	//Method to check if patternis a cropped version of source
+	public void compareNoResize(Array[] pattern, Array[] source) {	
+		
+	}
+	
+	//TODO Implement
+	//Else - LOOOOONG check
+	public void compareFull(Array[] pattern, Array[] source) {
+		
+	}
+	
+	
+	
+	/*
+	THEORY: Like numbers should be near others. 
+	30 		 36 		 20 	  50
+	30 31 31 36 35 21 20 21 20 49 50
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
