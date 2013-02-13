@@ -1,12 +1,30 @@
 import java.io.*; //??? not sure
 
+public class Pixel {
+    public Pixel(int p){
+        b = p & 0x0000FF;
+        g = (p & 0x00FF00) >> 8;
+        r = (p & 0xFF0000) >> 16;
+    }
+
+    public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
+        return (abs(a.r - b.r) <= tolerance) &&
+               (abs(a.g - b.g) <= tolerance) &&
+               (abs(a.b - b.b) <= tolerance);
+    }
+
+    public int r;
+    public int g;
+    public int b;
+}
+
 public class Spims {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// 
+		//  
 		String patternFile = "";
         String sourceFile = "";
         //Single argument given                                                                                                                                                                                                    
@@ -57,5 +75,49 @@ public class Spims {
                 System.err.println("Error: " + e.getMessage());
         }
 	}
+	
+	
+	
+	//TODO Implement
+	//Method to check if pattern matches exactly the base image
+	
+	//Call this if same size arrays and arrays within are same length
+	public void compareExact(int[][] pattern, int[][] source) {
+		
+	}
+	
+	//TODO Implement
+	//Method to check if patternis a cropped version of source
+	public void compareNoResize(int[][] pattern, int[][] source) {	
+		
+	}
+	
+	//TODO Implement
+	//Else - LOOOOONG check
+	public void compareFull(int[][] pattern, int[][] source) {
+		
+	}
+	
+	
+	
+	/*
+	THEORY: Like numbers should be near others. 
+	30 		 36 		 20 	  50
+	30 31 31 36 35 21 20 21 20 49 50
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
