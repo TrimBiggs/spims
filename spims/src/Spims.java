@@ -1,5 +1,17 @@
 import java.io.*; //??? not sure
 
+public class Pixel {
+    public Pixel(int p){
+        b = p & 0x0000FF;
+        g = (p & 0x00FF00) >> 8;
+        r = (p & 0xFF0000) >> 16;
+    }
+
+    public int r;
+    public int g;
+    public int b;
+}
+
 public class Spims {
 
 	/**
