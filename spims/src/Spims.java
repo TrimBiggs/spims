@@ -6,7 +6,7 @@ public class Spims {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// 
+		//  
 		String patternFile = "";
         String sourceFile = "";
         //Single argument given                                                                                                                                                                                                    
