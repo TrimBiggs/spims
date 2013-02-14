@@ -20,37 +20,40 @@ public class Pixel {
 
 public class Spims {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		//  
-		String patternFile = "";
-        String sourceFile = "";
-        //Single argument given                                                                                                                                                                                                    
-        if (args.length < 4) {
-        	//TODO Modify this to have more information for errors
-        	System.err.println("ERROR! ERROR! NOT ENOUGH INPUTS!\n"+
-        					   "WILL SELF DESTRUCT IN 5 SECONDS!");
-        	return;
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+	//  
+	String patternFile = "";
+	String sourceFile = "";
+	//Single argument given                                                                                                                                                                                                    
+	if (args.length < 4) {
+	    //TODO Modify this to have more information for errors
+	    System.err.println("ERROR! ERROR! NOT ENOUGH INPUTS!\n"+
+			       "WILL SELF DESTRUCT IN 5 SECONDS!");
+	    return;
         }
         //TODO Modify to take in more arguments and check validity/flags
-		if (args.length == 4) {
-			//args[0] should be -p
-			patternFile = args[1];
-			//args3 should be -s
-			sourceFile = args[3];
+	if (args.length == 4) {
+	    //args[0] should be -p
+	    patternFile = args[1];
+	    //args3 should be -s
+	    sourceFile = args[3];
         }
-		//TODO Separate input and output into two if statements to have better error messages 
-		if (!(patternFile.toLowerCase().endsWith(".png") ||
-			  patternFile.toLowerCase().endsWith(".gif") ||
-			  patternFile.toLowerCase().endsWith(".jpg")) ||
-			!(sourceFile.toLowerCase().endsWith(".png") ||
-			  sourceFile.toLowerCase().endsWith(".gif") ||
-			  sourceFile.toLowerCase().endsWith(".jpg"))) {
-			System.err.println("ERROR! ERROR! WRONG FILE EXTENSION!!!");
-			return;
-		}
+	//TODO Separate input and output into two if statements to have better error messages 
+	if (!(patternFile.toLowerCase().endsWith(".png") ||
+	      patternFile.toLowerCase().endsWith(".gif") ||
+	      patternFile.toLowerCase().endsWith(".jpg")) ||
+	    !(sourceFile.toLowerCase().endsWith(".png") ||
+	      sourceFile.toLowerCase().endsWith(".gif") ||
+	      sourceFile.toLowerCase().endsWith(".jpg"))) {
+	    System.err.println("ERROR! ERROR! WRONG FILE EXTENSION!!!");
+	    return;
+	}
+	BufferedReader patternFile = null;
+	BufferedReader sourceFile = null;
+	
         //Multiple arguments given, check for '-r' flag                                                                                                                                                                            
         else if (args.length >= 2) {
         	patternFile = args[1];
@@ -60,6 +63,19 @@ public class Spims {
         	return;
         }
         try{
+	    if (img1.width == img2.width && img1.height == img2.height){
+		//Check if any results, if not call compareScaleUp()
+		compareExact(sourceIntArray, patternIntArray);
+	    }
+	    else if ( ){
+
+	    }
+	    
+	    
+	    Pixel[][] patternPixelArray = ;
+	    Pixel[][] sourcePixelArray = ;
+
+	    
                 
         	//Open FileReader to view file contents                                                                                                                                                                            
                 //FileReader fr = new FileReader(inputFile);
@@ -70,7 +86,9 @@ public class Spims {
                 System.out.println("result");
                 //Close FileReader                                                                                                                                                                                                 
                 //fr.close();
-        }
+        
+		
+	}
         catch (Exception e){
                 System.err.println("Error: " + e.getMessage());
         }
@@ -82,29 +100,33 @@ public class Spims {
 	//Method to check if pattern matches exactly the base image
 	
 	//Call this if same size arrays and arrays within are same length
-	public void compareExact(int[][] pattern, int[][] source) {
+        public void compareExact(int[][] pattern, int[][] source) {
 		
 	}
 	
 	//TODO Implement
 	//Method to check if patternis a cropped version of source
-	public void compareNoResize(int[][] pattern, int[][] source) {	
+    public void compareNoResize(int[][] pattern, int[][] source) {	
 		
 	}
 	
 	//TODO Implement
 	//Else - LOOOOONG check
-	public void compareFull(int[][] pattern, int[][] source) {
+    public void compareScaleUp(int[][] pattern, int[][] source, int tolerance) {
 		
 	}
+
+    public void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+	
+    }
 	
 	
 	
-	/*
-	THEORY: Like numbers should be near others. 
-	30 		 36 		 20 	  50
-	30 31 31 36 35 21 20 21 20 49 50
-	*/
+    /**
+     *THEORY: Like numbers should be near others. 
+     *30	 36	  20          50
+     *30 31 31 36 35 21 20 21 20 49 50
+     */
 	
 	
 	
