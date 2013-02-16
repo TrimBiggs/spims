@@ -26,7 +26,8 @@ public class Spims {
     public static void main(String[] args) {
     	String patternFile = "";
     	String sourceFile = "";
-	//Less than apprpriate number of arguments given                                                                                                                                                                                                    
+
+		//Less than apprpriate number of arguments given                                                                                                                                                                                                    
     	if (args.length < 4) {
     		System.err.println("Error: Expected at least 4 inputs.\n"+
     			"Got " + args.length + ": " + args);
@@ -43,7 +44,7 @@ public class Spims {
 	    //args[2] should be -s
     		sourceFile = args[3];
     	}
-	//TODO Separate input and output into two if statements to have better error messages 
+		//TODO Separate input and output into two if statements to have better error messages 
     	if (!(patternFile.toLowerCase().endsWith(".png") ||
     		  patternFile.toLowerCase().endsWith(".gif") ||
     		  patternFile.toLowerCase().endsWith(".jpg"))) {
@@ -58,45 +59,57 @@ public class Spims {
     			"Got " + sourceFile);
     		return;
     	}
-    }
-    BufferedReader patternFile = null;
-    BufferedReader sourceFile = null;
+    
+    	BufferedReader patternImg = null;
+    	BufferedReader sourceImg = null;
 
-    else {
-    	System.err.println("Invalid command, one or more arguments required.");
-    	return;
-    }
-    try{
-    	if (img1.width == img2.width && img1.height == img2.height){
+    	try{
+    		patternImg = ImageIO.read(new File(patternFile));
+    		sourceImg = ImageIO.read(new File(sourceFile));
+    		//TODO: Modify this to be Array of Arrays
+    		Pixel[][] patternPixels = new Pixel[patternImg.getWidth()*(new Pixel[patternImg.getHeight])];
+    		Pixel[][] sourcePixels = new Pixel[sourceImg.getWidth()*(new Pixel[sourceImg.getHeight])];
+
+    	// System.out.println(pixels1.length);
+   			patternImg.getRGB(0, 0, img2.getWidth(), patternFile.getHeight(), 
+    			pixels1, 0, patternFile.getWidth());
+    		sourceImg.getRGB(0, 0, sourceImg.getWidth(), sourceImg.getHeight(),
+    			sourcePixels, 0, sourceImg.getWidth());
+
+    	for(int i = 0; i < pixels1.length; i++){
+    		if(i % img2.getWidth() == 0){
+    			System.out.println();
+    		}
+    		System.out.print(pixels1[i]+"  ");
+    	}
+    	} catch(IOException e){
+    		System.err.println(e);
+    	}
+
+    // dont think this works for png but it's supposedly fast..
+    // int[] pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
+
+    	
+
+    	try{
+    		if (img1.width == img2.width && img1.height == img2.height){
 		//Check if any results, if not call compareScaleUp()
-    		compareExact(sourceIntArray, patternIntArray);
-    	}
-    	else if ( ){
+    			compareExact(sourceIntArray, patternIntArray);
+    		}
+    		else if ( ){
+
+    		}
+
+    		Pixel[][] patternPixelArray = ;
+    		Pixel[][] sourcePixelArray = ;
+
+    		System.out.println("result");
 
     	}
-
-
-    	Pixel[][] patternPixelArray = ;
-    	Pixel[][] sourcePixelArray = ;
-
-
-
-        	//Open FileReader to view file contents                                                                                                                                                                            
-                //FileReader fr = new FileReader(inputFile);
-                //String inputString = new BufferedReader(fr).readLine();
-                //Call parse function on the input and pass in the reduce flag bit                                                                                                                                                 
-                //String prefix = Prefixer.parseInfix(inputString, reduce);
-                //Print the input string before and after to the console                                                                                                                                                           
-    	System.out.println("result");
-                //Close FileReader                                                                                                                                                                                                 
-                //fr.close();
-
-
+    	catch (Exception e){
+    		System.err.println("Error: " + e.getMessage());
+    	}
     }
-    catch (Exception e){
-    	System.err.println("Error: " + e.getMessage());
-    }
-}
 
 
 
@@ -104,25 +117,25 @@ public class Spims {
 	//Method to check if pattern matches exactly the base image
 
 	//Call this if same size arrays and arrays within are same length
-public void compareExact(int[][] pattern, int[][] source) {
+    public void compareExact(int[][] pattern, int[][] source) {
 
-}
+    }
 
 	//TODO Implement
 	//Method to check if patternis a cropped version of source
-public void compareNoResize(int[][] pattern, int[][] source) {	
+    public void compareNoResize(int[][] pattern, int[][] source) {	
 
-}
+    }
 
 	//TODO Implement
 	//Else - LOOOOONG check
-public void compareScaleUp(int[][] pattern, int[][] source, int tolerance) {
+    public void compareScaleUp(int[][] pattern, int[][] source, int tolerance) {
 
-}
+    }
 
-public void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
-	
-}
+    public void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+
+    }
 
 
 
