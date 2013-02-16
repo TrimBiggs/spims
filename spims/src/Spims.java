@@ -33,7 +33,7 @@ public class Spims {
     		return;
     	}
         //TODO Modify to take in more arguments and check validity/flags
-    	if (args[0] != "-p") {
+    	if (args[0].equals("-p")) {
 
     	}
     	//Do a search on the '-p' and '-s' flags
@@ -62,9 +62,6 @@ public class Spims {
     BufferedReader patternFile = null;
     BufferedReader sourceFile = null;
 
-    else if (args.length >= 2) {
-    	patternFile = args[1];
-    }
     else {
     	System.err.println("Invalid command, one or more arguments required.");
     	return;
