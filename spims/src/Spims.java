@@ -1,22 +1,6 @@
 import java.io.*; //??? not sure
-
-public class Pixel {
-	public Pixel(int p){
-		b = p & 0x0000FF;
-		g = (p & 0x00FF00) >> 8;
-		r = (p & 0xFF0000) >> 16;
-	}
-
-	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
-		return (abs(a.r - b.r) <= tolerance) &&
-		(abs(a.g - b.g) <= tolerance) &&
-		(abs(a.b - b.b) <= tolerance);
-	}
-
-	public int r;
-	public int g;
-	public int b;
-}
+import javax.imageio.*;
+import java.awt.image.BufferedImage.*;
 
 public class Spims {
 
@@ -60,17 +44,16 @@ public class Spims {
     		return;
     	}
     
-    	BufferedReader patternImg = null;
-    	BufferedReader sourceImg = null;
+    	BufferedImage patternImg = null;
+    	BufferedImage sourceImg = null;
 
     	try{
     		patternImg = ImageIO.read(new File(patternFile));
     		sourceImg = ImageIO.read(new File(sourceFile));
-    		int[][] paternInts = new Pixel[patternImg.getWidth()*patternImg.getHeight()];
-    		int[][] sourceInts = new Pixel[sourceImg.getWidth()*sourceImg.getHeight()];
+    		int[][] paternInts = new int[patternImg.getWidth()][patternImg.getHeight()];
+    		int[][] sourceInts = new int[sourceImg.getWidth()][sourceImg.getHeight()];
     		
     		if (img1.width == img2.width && img1.height == img2.height){
-
 				//Check if any results, if not call compareScaleUp()
     			compareExact(sourceIntArray, patternIntArray);
     		}
@@ -119,14 +102,15 @@ public class Spims {
         //go through each row and each column
        for (int i = 0; i < source.length; i++){
             for (int j = 0; j < source[1].length; j++){
-            //check if the first pixel of the pattern
-            //matches the given pixel of the source
-            if (pattern[0][0] == source[i][j]){
-                // if so, call helper to see if we have found the match spot
-                strResult = justCompare(pattern, source, i, j);
-                //if we have, then return true
-                if (strResult == "true"){
-                    return strResult;
+                //check if the first pixel of the pattern
+                //matches the given pixel of the source
+                if (pattern[0][0] == source[i][j]){
+                    // if so, call helper to see if we have found the match spot
+                    strResult = justCompare(pattern, source, i, j);
+                    //if we have, then return true
+                    if (strResult == "true"){
+                        return strResult;
+                    }
                 }
             }
         }
