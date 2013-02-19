@@ -233,30 +233,46 @@ public class Spims {
 
     }
 
-
-/*
-    public static void debugPixels(){
+    public static void debugPixels(Pixel[][] pattern, Pixel[][] source){
     	System.out.println("Pattern:\n");
-    	for(int i = 0; i < pattern.length; i++){
-			if(i % patternImg.getWidth() == 0){
-				System.out.println();
-			}
-    	}
+    	for(int j = 0; j < pattern.length; j++) {
+            for(int i = 0; i < pattern[j].length; i++){
+                System.out.print(pattern[j][i]);
+            }
+            System.out.println();
+        }
     	System.out.println();
+        System.out.println("Source:");
+        for(int j = 0; j < source.length; j++) {
+            for(int i = 0; i < source[j].length; i++){
+                System.out.print(source[j][i]);
+            }
+            System.out.println();
+        }
+        System.out.println();
     	return;
     }
 
-    public static void debugInts(){
+    public static void debugInts(int[][] pattern, int[][] source){
     	System.out.println("Pattern:\n");
-    	for(int i = 0; i < patternInts.length; i++){
-				if(i % patternImg.getWidth() == 0){
-					System.out.println();
-				}
-    		}
-    	System.out.println();
-    	return;
+        for(int j = 0; j < pattern.length; j++) {
+            for(int i = 0; i < pattern[j].length; i++){
+                System.out.print(pattern[j][i]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("Source:");
+        for(int j = 0; j < source.length; j++) {
+            for(int i = 0; i < source[j].length; i++){
+                System.out.print(source[j][i]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+        return;
     }
-*/
+
     public static void printResults(int[] results){
     	//TODO Check number of results
     	System.out.println("");
