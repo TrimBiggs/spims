@@ -24,6 +24,15 @@ public class Pixel {
 		return new Pixel(a.r / scale, a.g / scale, a.b / scale);
 	}
 
+	public static boolean getBetween(Pixel a1, Pixel a2, Pixel b, int tolerance) {
+		return (((a1.r <= b.r && b.r <= a2.r) || (a1.r >= b.r && b.r >= a2.r)) ||
+				((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
+			   (((a1.g <= b.g && b.g <= a2.g) || (a1.g >= b.g && b.g >= a2.g)) ||
+			    ((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
+			   (((a1.b <= b.b && b.b <= a2.b) || (a1.b >= b.b && b.b >= a2.b)) ||
+			   	((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance)));
+	}
+
 	public int r;
 	public int g;
 	public int b;
