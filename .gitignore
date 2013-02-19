@@ -4,4 +4,8 @@ spims/.classpath
 spims/.project
 .DS_Store
 .class
-spims/bin/Spims.class
+Pixel.class
+Spims.class
+Spims.java~
+Spims.class~
+.gitignore~
