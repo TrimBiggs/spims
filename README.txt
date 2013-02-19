@@ -26,7 +26,7 @@ In "spims" directory, run command:
 Run:
 //TODO !!! : Make an executable JAR file with this
 In "spims" directory, run command:
-	$  java Spims -p <file1> -s <file2>
+	$  ./spims -p <file1> -s <file2>
 
 where
 	<file1> is the name of an existing file in JPEG, PNG, or
