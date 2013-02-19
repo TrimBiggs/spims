@@ -209,42 +209,71 @@ public class Spims {
     public static String compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
-        for (int ii = 0; ii < patternLengthi; ii++) {
-            int pjj = 0;
-            int sjj = 0;
-            while (pjj < patternLengthj) {
-                System.out.println(j+sjj);
-                if ((j+sjj) >= source[0].length){
+        int pii = 0;
+        int sii = 0;
+
+        while (pii < patternLengthi) {
+            if ((i+sii) >= source.length){
                     //if (Pixel.isSimilar(source[i][j+sjj-1], pattern[ii][pjj], tolerance)) {
-                        pjj++;
+                pii++;
                     //}
-                    //if (Pixel.isSimilar(source[i][j+sjj-1])
-                } else if (Pixel.isSimilar(source[i][j+sjj], pattern[ii][pjj], tolerance)){
-                    sjj++;
-                    pjj++;
-                    //System.out.println("Similar actual pixel");
-                } else if (Pixel.isSimilar(Pixel.getQuotient(source[ii][j+sjj], scale), pattern[ii][pjj], tolerance)) {
-                    //System.out.println("Similar half pixel");
-                    pjj++;
-                } else if (Pixel.isSimilar(source[ii][j+sjj-1], pattern[ii][pjj], tolerance)) {
-                    //System.out.println("Similar to previous pixel");
-                    pjj++;
-                } else if (Pixel.isSimilar(source[ii][j+sjj], pattern[ii][pjj+1], tolerance)) {
-                    pjj++;
-                } else if (Pixel.isSimilar(source[ii][j+sjj+1], pattern[ii][pjj], tolerance)) {
-                    sjj++;
-                } 
-                //else check if at end of source and don't increase it 
-                else {
-                    System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
-                        "Source Pixel =  ("+source[ii][j+sjj].r+", "+source[ii][j+sjj].g+", "+source[ii][j+sjj].b+")\n"+
-                        "Pattern Pixel = ("+pattern[ii][pjj].r+", "+pattern[ii][pjj].g+", "+pattern[ii][pjj].b+")\n");
-                    return "false";
-                }
+            } else if (compareUpWidth(pattern[pii], source[i+sii], j, scale, tolerance)) {
+                pii++;
+                sii++;
+            }/* else if (compareUpWidth(pattern[pii], source[i+sii+1], j, scale, tolerance)) {
+                pii++;
             }
-            System.out.println("Exits while loop");
+                sjj++;
+                pjj++;
+                    //System.out.println("Similar actual pixel");
+            } else if (Pixel.isSimilar(Pixel.getQuotient(source[ii][j+sjj], scale), pattern[ii][pjj], tolerance) ||
+             Pixel.isSimilar(source[ii][j+sjj-1], pattern[ii][pjj], tolerance) ||
+             Pixel.isSimilar(source[ii][j+sjj], pattern[ii][pjj+1], tolerance)) {
+                pjj++;
+            } else if (Pixel.isSimilar(source[ii][j+sjj+1], pattern[ii][pjj], tolerance)) {
+                sjj++;
+            } */
+                //else check if at end of source and don't increase it 
+            else {
+                /*System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
+                    "Source Pixel =  ("+source[ii][j+sjj].r+", "+source[ii][j+sjj].g+", "+source[ii][j+sjj].b+")\n"+
+                    "Pattern Pixel = ("+pattern[ii][pjj].r+", "+pattern[ii][pjj].g+", "+pattern[ii][pjj].b+")\n");*/
+                return "false";
+            }
+
         }
         return "true";
+    }
+
+    public static boolean compareUpWidth(Pixel[] pattern, Pixel[] source, int j, int scale, int tolerance){
+        int patternLength = pattern.length; 
+        int sjj = 0;
+        int pjj = 0;
+        while (pjj < patternLength) {
+            if ((j+sjj) >= source.length){
+                    //if (Pixel.isSimilar(source[i][j+sjj-1], pattern[ii][pjj], tolerance)) {
+                pjj++;
+                    //}
+                    //if (Pixel.isSimilar(source[i][j+sjj-1])
+            } else if (Pixel.isSimilar(source[j+sjj], pattern[pjj], tolerance)){
+                sjj++;
+                pjj++;
+                    //System.out.println("Similar actual pixel");
+            } else if (Pixel.isSimilar(Pixel.getQuotient(source[j+sjj], scale), pattern[pjj], tolerance) ||
+             Pixel.isSimilar(source[j+sjj-1], pattern[pjj], tolerance) ||
+             Pixel.isSimilar(source[j+sjj], pattern[pjj+1], tolerance)) {
+                pjj++;
+            } else if (Pixel.isSimilar(source[j+sjj+1], pattern[pjj], tolerance)) {
+                sjj++;
+                //pjj++;
+            } else {
+                /*System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
+                    "Source Pixel =  ("+source[j+sjj].r+", "+source[j+sjj].g+", "+source[j+sjj].b+")\n"+
+                    "Pattern Pixel = ("+pattern[pjj].r+", "+pattern[pjj].g+", "+pattern[pjj].b+")\n");*/
+                return false;
+            }
+        }
+        return true;
     }
         /*
         int width = pattern.length;
