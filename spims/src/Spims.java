@@ -95,20 +95,21 @@ public class Spims {
                 System.out.println("In compareNoScale(...) function.");
                 System.out.println(compareNoScale(patternPixels, sourcePixels, tolerance));
             } else {
-                compareScaleUp(patternPixels, sourcePixels, tolerance);
+                System.out.println(compareScaleUp(patternPixels, sourcePixels, tolerance));
                 compareScaleDown(patternPixels, sourcePixels, tolerance);
             }
 
 
             //debugInts(patternInts, sourceInts);
             System.out.println();
-            //debugPixels(patternPixels, sourcePixels);
+            debugPixels(patternPixels, sourcePixels);
 
     		//TODO: This takes in the array or whatever 
     		//printResults(results);
     	}
     	catch (Exception e){
     		System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
     	}
     	//catch (IOException e){System.err.println(e);}
     }
@@ -134,15 +135,15 @@ public class Spims {
     //Method to check if patternis a cropped version of source
     public static String compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         //setup return string
-       String strResult = "false";
-       int patternLengthi = pattern.length;
-       int patternLengthj = pattern[0].length;
-       int sourceLengthi = source.length;
-       int sourceLengthj = source[0].length;
+        String strResult = "false";
+        int patternLengthi = pattern.length;
+        int patternLengthj = pattern[0].length;
+        int sourceLengthi = source.length;
+        int sourceLengthj = source[0].length;
 
         //go through each row and each column
         //TODO: Maybe computer the (source.length - pattern.length) things outside
-       for (int i = 0; i < (sourceLengthi - patternLengthi); i++){
+        for (int i = 0; i < (sourceLengthi - patternLengthi); i++){
             for (int j = 0; j < (sourceLengthj - patternLengthj); j++){
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
@@ -178,7 +179,74 @@ public class Spims {
 
 	//TODO Implement
 	//Else - LOOOOONG check
-    public static int[] compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+    public static String compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+        String strResult = "false";
+        int scale = 2;
+
+        int patternLengthi = pattern.length;
+        int patternLengthj = pattern[0].length;
+        int sourceLengthi = source.length;
+        int sourceLengthj = source[0].length;
+
+        for (int i = 0; i < sourceLengthi; i++){
+            for (int j = 0; j < sourceLengthj; j++){
+                //check if the first pixel of the pattern
+                //matches the given pixel of the source
+                if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
+                    System.out.println("Pixel match at (" + j + ", " + i + ")");
+                    // if so, call helper to see if we have found the match spot
+                    strResult = compareUpHelper(pattern, source, i, j, scale, tolerance);
+                    //if we have, then return true
+                    if (strResult == "true"){
+                        return strResult;
+                    }
+                }
+            }
+        }
+        return strResult;
+    }
+
+    public static String compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
+        int patternLengthi = pattern.length;
+        int patternLengthj = pattern[0].length;
+        for (int ii = 0; ii < patternLengthi; ii++) {
+            int pjj = 0;
+            int sjj = 0;
+            while (pjj < patternLengthj) {
+                System.out.println(j+sjj);
+                if ((j+sjj) >= source[0].length){
+                    //if (Pixel.isSimilar(source[i][j+sjj-1], pattern[ii][pjj], tolerance)) {
+                        pjj++;
+                    //}
+                    //if (Pixel.isSimilar(source[i][j+sjj-1])
+                } else if (Pixel.isSimilar(source[i][j+sjj], pattern[ii][pjj], tolerance)){
+                    sjj++;
+                    pjj++;
+                    //System.out.println("Similar actual pixel");
+                } else if (Pixel.isSimilar(Pixel.getQuotient(source[ii][j+sjj], scale), pattern[ii][pjj], tolerance)) {
+                    //System.out.println("Similar half pixel");
+                    pjj++;
+                } else if (Pixel.isSimilar(source[ii][j+sjj-1], pattern[ii][pjj], tolerance)) {
+                    //System.out.println("Similar to previous pixel");
+                    pjj++;
+                } else if (Pixel.isSimilar(source[ii][j+sjj], pattern[ii][pjj+1], tolerance)) {
+                    pjj++;
+                } else if (Pixel.isSimilar(source[ii][j+sjj+1], pattern[ii][pjj], tolerance)) {
+                    sjj++;
+                } 
+                //else check if at end of source and don't increase it 
+                else {
+                    System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
+                        "Source Pixel =  ("+source[ii][j+sjj].r+", "+source[ii][j+sjj].g+", "+source[ii][j+sjj].b+")\n"+
+                        "Pattern Pixel = ("+pattern[ii][pjj].r+", "+pattern[ii][pjj].g+", "+pattern[ii][pjj].b+")\n");
+                    return "false";
+                }
+            }
+            System.out.println("Exits while loop");
+        }
+        return "true";
+    }
+        /*
         int width = pattern.length;
         int height = pattern[0].length;
 
@@ -232,8 +300,11 @@ public class Spims {
                         curPatternCol++;
                         curPatternRow++;
                         if(source[i][j].val == pattern[curPatternRow][curPatternCol].val){
+                            System.out.println("Filling in If");
                             fillingGap = false; //but due to match so move on
-                        } else if(!Pixel.isSimilar(source[i][j], pattern[curPatternRow][curPatternCol], tolerance)){
+                        } else if(!(Pixel.isSimilar(source[i][j], pattern[curPatternRow][curPatternCol], tolerance) ||
+                                    Pixel.isSimilar(Pixel.getQuotient(pattern[curPatternRow][curPatternCol], 2), source[i][j], tolerance))) {
+                            System.out.println("Filling in Else");
                             fillingGap = false;
                             resultX = new int[4];
                             resultY = new int[4];
@@ -253,7 +324,9 @@ public class Spims {
             }
         }
         return resultX;
+        
     }
+*/
 
     public static int currentCornerCheck(Pixel[] corners, Pixel current){
         for(int i = 0; i < corners.length; i++){
@@ -262,8 +335,11 @@ public class Spims {
         return -1;
     }
 
-    public void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
-
+    public static void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+        System.out.println();
+        System.out.println("TODO: implement compareScaleDown");
+        System.out.println();
+        return;
     }
 
     public static void debugPixels(Pixel[][] pattern, Pixel[][] source){
@@ -281,8 +357,8 @@ public class Spims {
         for(int j = 0; j < source.length; j++) {
             for(int i = 0; i < source[j].length; i++){
                 System.out.print("(" + source[j][i].r + ",");
-                System.out.print("" + source[j][i].r + ",");
-                System.out.print("" + source[j][i].r + ")");
+                System.out.print("" + source[j][i].g + ",");
+                System.out.print("" + source[j][i].b + ")");
             }
             System.out.println();
         }

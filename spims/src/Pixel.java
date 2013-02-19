@@ -7,11 +7,21 @@ public class Pixel {
 		r = (p & 0xFF0000) >> 16;
 		val = p;
 	}
+	public Pixel(int red, int green, int blue){
+		r = red;
+		g = green;
+		b = blue;
+		val = 0;
+	}
 
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
 		return (Math.abs(a.r - b.r) <= tolerance) &&
 		(Math.abs(a.g - b.g) <= tolerance) &&
 		(Math.abs(a.b - b.b) <= tolerance);
+	}
+
+	public static Pixel getQuotient(Pixel a, int scale) {
+		return new Pixel(a.r / scale, a.g / scale, a.b / scale);
 	}
 
 	public int r;
