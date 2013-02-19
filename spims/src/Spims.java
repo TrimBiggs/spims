@@ -11,11 +11,16 @@ public class Spims {
     public static void main(String[] args) {
     	String patternFile = "";
     	String sourceFile = "";
+        int[] results = new int[1];
 
 		//Less than apprpriate number of arguments given                                                                                                                                                                                                    
     	if (args.length < 4) {
-    		System.err.println("Error: Expected at least 4 inputs.\n"+
-    			"Got " + args.length + ": " + args);
+            System.err.print("Error: Expected at least 4 inputs.\n"+
+    			"Got " + args.length + ": ");
+                for (int i = 0; i < args.length; i++) {
+                    System.err.print("" + args[i] + " ");
+                }
+            System.out.println();
     		return;
     	}
         //TODO Modify to take in more arguments and check validity/flags
@@ -51,7 +56,7 @@ public class Spims {
     	try{
     		patternImg = ImageIO.read(new File(patternFile));
     		sourceImg = ImageIO.read(new File(sourceFile));
-    		int[][] paternInts = new int[patternImg.getWidth()][patternImg.getHeight()];
+    		int[][] patternInts = new int[patternImg.getWidth()][patternImg.getHeight()];
     		int[][] sourceInts = new int[sourceImg.getWidth()][sourceImg.getHeight()];
     		
     		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
@@ -67,17 +72,17 @@ public class Spims {
     		// System.out.println(pixels1.length);
 			for(int i = 0; i < patternPixels.length; i++){
                 for(int j = 0; j < patternPixels[0].length; j++){
-                    patternPixels[i][j] = new Pixel(big.getRGB(i,j));
+                    patternPixels[i][j] = new Pixel(patternImg.getRGB(i,j));
                 }
             }
 			for(int i = 0; i < sourcePixels.length; i++){
                 for(int j = 0; j < sourcePixels[0].length; j++){
-                    sourcePixels[i][j] = new Pixel(big.getRGB(i,j));
+                    sourcePixels[i][j] = new Pixel(sourceImg.getRGB(i,j));
                 }
             }
 
     		//TODO: This takes in the array or whatever 
-    		printResults();
+    		printResults(results);
 
     	}
     	catch (Exception e){
@@ -92,7 +97,7 @@ public class Spims {
 	//Method to check if pattern matches exactly the base image
 
 	   //Call this if same size arrays and arrays within are same length
-    public String compareExact(Pixel[][] pattern, Pixel[][] source) {
+    public static String compareExact(int[][] pattern, int[][] source) {
         if (pattern == source) {
             return "true";
         }
@@ -103,7 +108,7 @@ public class Spims {
 
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public String compareNoResize(Pixel[][] pattern, Pixel[][] source) {
+    public static String compareNoResize(Pixel[][] pattern, Pixel[][] source) {
         //setup return string
        String strResult = "false";
         //go through each row and each column
@@ -125,7 +130,7 @@ public class Spims {
         return strResult;
     }
     
-    public String justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j) {
+    public static String justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j) {
     //go through each row and column of the pattern image
         for (int ii = 0; i < pattern.length; i++){
             for (int jj = 0; j < pattern[1].length; j++){
@@ -229,35 +234,35 @@ public class Spims {
     }
 
 
+/*
+    public static void debugPixels(){
+    	System.out.println("Pattern:\n");
+    	for(int i = 0; i < pattern.length; i++){
+			if(i % patternImg.getWidth() == 0){
+				System.out.println();
+			}
+    	}
+    	System.out.println();
+    	return;
+    }
 
-    public void debugPixels(){
+    public static void debugInts(){
     	System.out.println("Pattern:\n");
     	for(int i = 0; i < patternInts.length; i++){
-				if(i % img2.getWidth() == 0){
+				if(i % patternImg.getWidth() == 0){
 					System.out.println();
 				}
     		}
     	System.out.println();
     	return;
     }
-
-    public void debugInts(){
-    	System.out.println("Pattern:\n");
-    	for(int i = 0; i < patternInts.length; i++){
-				if(i % img2.getWidth() == 0){
-					System.out.println();
-				}
-    		}
-    	System.out.println();
-    	return;
-    }
-
-    public void printResults(int[] results){
+*/
+    public static void printResults(int[] results){
     	//TODO Check number of results
     	System.out.println("");
-    	for (i = 0; i < results.length; i = i+4) {
+    	for (int i = 0; i < results.length; i = i+4) {
     		System.out.println("" + results[i] + " matches " +results[i+1] + 
-    			" at topleft " + result[i+2] + " bottomright " + result[i+3]);
+    			" at topleft " + results[i+2] + " bottomright " + results[i+3]);
     	}
     	return;
     }
