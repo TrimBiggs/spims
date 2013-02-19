@@ -1,6 +1,7 @@
 import java.io.*; //??? not sure
 import javax.imageio.*;
-import java.awt.image.BufferedImage.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class Spims {
 
@@ -53,21 +54,27 @@ public class Spims {
     		int[][] paternInts = new int[patternImg.getWidth()][patternImg.getHeight()];
     		int[][] sourceInts = new int[sourceImg.getWidth()][sourceImg.getHeight()];
     		
-    		if (img1.width == img2.width && img1.height == img2.height){
+    		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
 				//Check if any results, if not call compareScaleUp()
-    			compareExact(sourceIntArray, patternIntArray);
+    			compareExact(sourceInts, patternInts);
     		}
             
 
     		//TODO: Modify these to be Arrays of Arrays
-    		Pixel[][] patternPixels = new Pixel[patternImg.getWidth()*patternImg.getHeight()];
-    		Pixel[][] sourcePixels = new Pixel[sourceImg.getWidth()*sourceImg.getHeight()];
+    		Pixel[][] patternPixels = new Pixel[patternImg.getWidth()][patternImg.getHeight()];
+    		Pixel[][] sourcePixels = new Pixel[sourceImg.getWidth()][sourceImg.getHeight()];
 
     		// System.out.println(pixels1.length);
-			patternImg.getRGB(0, 0, img2.getWidth(), patternFile.getHeight(), 
-    							pixels1, 0, patternFile.getWidth());
-			sourceImg.getRGB(0, 0, sourceImg.getWidth(), sourceImg.getHeight(),
-    							sourcePixels, 0, sourceImg.getWidth());
+			for(int i = 0; i < patternPixels.length; i++){
+                for(int j = 0; j < patternPixels[0].length; j++){
+                    patternPixels[i][j] = new Pixel(big.getRGB(i,j));
+                }
+            }
+			for(int i = 0; i < sourcePixels.length; i++){
+                for(int j = 0; j < sourcePixels[0].length; j++){
+                    sourcePixels[i][j] = new Pixel(big.getRGB(i,j));
+                }
+            }
 
     		//TODO: This takes in the array or whatever 
     		printResults();
@@ -225,7 +232,7 @@ public class Spims {
 
     public void debugPixels(){
     	System.out.println("Pattern:\n");
-    	for(int i = 0; i < pixels1.length; i++){
+    	for(int i = 0; i < patternInts.length; i++){
 				if(i % img2.getWidth() == 0){
 					System.out.println();
 				}
@@ -236,7 +243,7 @@ public class Spims {
 
     public void debugInts(){
     	System.out.println("Pattern:\n");
-    	for(int i = 0; i < patternInt.length; i++){
+    	for(int i = 0; i < patternInts.length; i++){
 				if(i % img2.getWidth() == 0){
 					System.out.println();
 				}

@@ -5,6 +5,7 @@ public class Pixel {
 		b = p & 0x0000FF;
 		g = (p & 0x00FF00) >> 8;
 		r = (p & 0xFF0000) >> 16;
+		val = p;
 	}
 
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
@@ -16,4 +17,5 @@ public class Pixel {
 	public int r;
 	public int g;
 	public int b;
+	public int val;
 }
