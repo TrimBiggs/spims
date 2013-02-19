@@ -56,34 +56,54 @@ public class Spims {
     	try{
     		patternImg = ImageIO.read(new File(patternFile));
     		sourceImg = ImageIO.read(new File(sourceFile));
-    		int[][] patternInts = new int[patternImg.getWidth()][patternImg.getHeight()];
-    		int[][] sourceInts = new int[sourceImg.getWidth()][sourceImg.getHeight()];
-    		
+    		int[][] patternInts = new int[patternImg.getHeight()][patternImg.getWidth()];
+    		int[][] sourceInts = new int[sourceImg.getHeight()][sourceImg.getWidth()];
+
+            //Create integer arrays of pattern and source
+            for(int i = 0; i < patternInts.length; i++){
+                for(int j = 0; j < patternInts[0].length; j++){
+                    patternInts[i][j] = patternImg.getRGB(j,i);
+                }
+            }
+            for(int i = 0; i < sourceInts.length; i++){
+                for(int j = 0; j < sourceInts[0].length; j++){
+                    sourceInts[i][j] = sourceImg.getRGB(j,i);
+                }
+            }
+
+            //If images are exact width/height, compare them
     		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
 				//Check if any results, if not call compareScaleUp()
-    			compareExact(sourceInts, patternInts);
-    		}
-            
+                System.out.println("In compareExact(...) function.");
+    			System.out.println(compareExact(sourceInts, patternInts));
+    		} else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
+                System.out.println("In compareNoScale(...) function.");
+                System.out.println(compareNoScale(patternInts, sourceInts));
+            }
 
     		//TODO: Modify these to be Arrays of Arrays
-    		Pixel[][] patternPixels = new Pixel[patternImg.getWidth()][patternImg.getHeight()];
-    		Pixel[][] sourcePixels = new Pixel[sourceImg.getWidth()][sourceImg.getHeight()];
+    		Pixel[][] patternPixels = new Pixel[patternImg.getHeight()][patternImg.getWidth()];
+    		Pixel[][] sourcePixels = new Pixel[sourceImg.getHeight()][sourceImg.getWidth()];
 
     		// System.out.println(pixels1.length);
 			for(int i = 0; i < patternPixels.length; i++){
-                for(int j = 0; j < patternPixels[0].length; j++){
-                    patternPixels[i][j] = new Pixel(patternImg.getRGB(i,j));
+                for(int j = 0; j < patternPixels[i].length; j++){
+                    patternPixels[i][j] = new Pixel(patternImg.getRGB(j,i));
                 }
             }
 			for(int i = 0; i < sourcePixels.length; i++){
-                for(int j = 0; j < sourcePixels[0].length; j++){
-                    sourcePixels[i][j] = new Pixel(sourceImg.getRGB(i,j));
+                for(int j = 0; j < sourcePixels[i].length; j++){
+                    sourcePixels[i][j] = new Pixel(sourceImg.getRGB(j,i));
                 }
             }
+/*
+            //debugInts(patternInts, sourceInts);
+            System.out.println();
+            //debugPixels(patternPixels, sourcePixels);
 
     		//TODO: This takes in the array or whatever 
-    		printResults(results);
-
+    		//printResults(results);
+*/
     	}
     	catch (Exception e){
     		System.err.println("Error: " + e.getMessage());
@@ -98,22 +118,30 @@ public class Spims {
 
 	   //Call this if same size arrays and arrays within are same length
     public static String compareExact(int[][] pattern, int[][] source) {
-        if (pattern == source) {
-            return "true";
+        for (int i = 0; i < pattern.length; i++){
+            for (int j = 0; j < pattern[i].length; j++){
+                if (pattern[i][j] != source[i][j]){
+                    return "false";
+                }
+            }
         }
-        else
-            return "false";
-
+        return "true";
     }
 
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static String compareNoResize(Pixel[][] pattern, Pixel[][] source) {
+    public static String compareNoScale(int[][] pattern, int[][] source) {
         //setup return string
        String strResult = "false";
+       int patternLengthi = pattern.length;
+       int patternLengthj = pattern[0].length;
+       int sourceLengthi = source.length;
+       int sourceLengthj = source[0].length;
+
         //go through each row and each column
-       for (int i = 0; i < source.length; i++){
-            for (int j = 0; j < source[1].length; j++){
+        //TODO: Maybe computer the (source.length - pattern.length) things outside
+       for (int i = 0; i < (sourceLengthi - patternLengthi); i++){
+            for (int j = 0; j < (sourceLengthj - patternLengthj); j++){
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
                 if (pattern[0][0] == source[i][j]){
@@ -130,10 +158,10 @@ public class Spims {
         return strResult;
     }
     
-    public static String justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j) {
+    public static String justCompare(int[][] pattern, int[][] source, int i, int j) {
     //go through each row and column of the pattern image
-        for (int ii = 0; i < pattern.length; i++){
-            for (int jj = 0; j < pattern[1].length; j++){
+        for (int ii = 0; ii < pattern.length; ii++){
+            for (int jj = 0; jj < pattern[ii].length; jj++){
                 //check if the pattern and source match
                 if (pattern[ii][jj] != source[i+ii][j+jj]){
                     return "false";
@@ -236,7 +264,7 @@ public class Spims {
     public static void debugPixels(Pixel[][] pattern, Pixel[][] source){
     	System.out.println("Pattern:\n");
     	for(int j = 0; j < pattern.length; j++) {
-            for(int i = 0; i < pattern[j].length; i++){
+            for(int i = 0; i < pattern[0].length; i++){
                 System.out.print(pattern[j][i]);
             }
             System.out.println();
