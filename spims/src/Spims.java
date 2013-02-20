@@ -12,7 +12,8 @@ public class Spims {
     	String patternFile = "";
     	String sourceFile = "";
         int[] results = new int[1];
-        int tolerance = 20;
+        int tolerance = 60;
+        int[] result;
 
 		//Less than apprpriate number of arguments given                                                                                                                                                                                                    
     	if (args.length < 4) {
@@ -90,14 +91,30 @@ public class Spims {
     		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
 				//Check if any results, if not call compareScaleUp()
                 System.out.println("In compareExact(...) function.");
-    			System.out.println(compareExact(sourceInts, patternInts));
+    			result = compareExact(sourceInts, patternInts);
+                if (result.length == 0) {
+                    result = compareNoScale(patternPixels, sourcePixels, tolerance);
+                    if (result.length == 0) {
+                        //result = compareScaleUp(patternPixels, sourcePixels, tolerance);
+                    }
+                }
     		} else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
                 System.out.println("In compareNoScale(...) function.");
-                System.out.println(compareNoScale(patternPixels, sourcePixels, tolerance));
+                result = compareNoScale(patternPixels, sourcePixels, tolerance);
+                
+                    /*if (result.length == 0){
+                        System.out.println("In compareScaleUp(...) function.");
+                        result = compareScaleUp(patternPixels, sourcePixels, tolerance);
+                        //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
+                    }*/
             } else {
-                System.out.println(compareScaleUp(patternPixels, sourcePixels, tolerance));
-                compareScaleDown(patternPixels, sourcePixels, tolerance);
+                result = new int[0];
             }
+
+            patternFile = patternFile.substring(patternFile.lastIndexOf("/") + 1);
+            sourceFile = sourceFile.substring(sourceFile.lastIndexOf("/") + 1);
+
+            printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
 
 
             //debugInts(patternInts, sourceInts);
@@ -108,7 +125,7 @@ public class Spims {
     		//printResults(results);
     	}
     	catch (Exception e){
-    		System.err.println("Error: " + e.getMessage());
+    		//System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
     	}
     	//catch (IOException e){System.err.println(e);}
@@ -116,26 +133,27 @@ public class Spims {
 
 
     //Call this if same size arrays and arrays within are same length
-    public static String compareExact(int[][] pattern, int[][] source) {
+    public static int[] compareExact(int[][] pattern, int[][] source) {
         for (int i = 0; i < pattern.length; i++){
             for (int j = 0; j < pattern[i].length; j++){
                 if (pattern[i][j] != source[i][j]){
-                    return "false";
+                    return new int[0];
                 }
             }
         }
-        return "true";
+        return new int[]{0,0};
     }
 
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static String compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+    public static int[] compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         //setup return string
         String strResult = "false";
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
         int sourceLengthi = source.length;
         int sourceLengthj = source[0].length;
+        int[] res;
 
         //go through each row and each column
         //TODO: Maybe computer the (source.length - pattern.length) things outside
@@ -144,44 +162,47 @@ public class Spims {
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
                 if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
+                    //System.out.println("Pixel match at (" + j + ", " + i + ")");
                     // if so, call helper to see if we have found the match spot
                     //System.out.println("Pixel match at (" + j + ", " + i + ")");
-                    strResult = justCompare(pattern, source, i, j, tolerance);
+                    res = justCompare(pattern, source, i, j, tolerance);
                     //if we have, then return true
-                    if (strResult == "true"){
-                        return strResult;
+                    if (res.length == 2){
+                        return res;
                     }
                 }
             }
         }
         //if we can't find anything, return false
-        return strResult;
+        return new int[0];
     }
     
-    public static String justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
+    public static int[] justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
+        int[] result;
         for (int ii = 0; ii < pattern.length; ii++){
             for (int jj = 0; jj < pattern[ii].length; jj++){
                 //check if the pattern and source match
                 if (!(Pixel.isSimilar(pattern[ii][jj], source[i+ii][j+jj], tolerance))) {
-                    
-                    return "false";
+                    //System.out.println("No Match");
+                    return new int[0];
                 }
             }
         }
-        return "true";
+        result = new int[]{j,i};
+        return result;
     }
 
 	//TODO Implement
 	//Else - LOOOOONG check
-    public static String compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance) {
-        String strResult = "false";
+    public static int[] compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         int scale = 2;
 
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
         int sourceLengthi = source.length;
         int sourceLengthj = source[0].length;
+        int[] res;
 
         for (int i = 0; i < sourceLengthi; i++){
             for (int j = 0; j < sourceLengthj; j++){
@@ -190,20 +211,20 @@ public class Spims {
                 if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
                     System.out.println("Pixel match at (" + j + ", " + i + ")");
                     // if so, call helper to see if we have found the match spot
-                    strResult = compareUpHelper(pattern, source, i, j, scale, tolerance);
-                    //if we have, then return true
-                    if (strResult == "true"){
-                        return strResult;
+                    res = compareUpHelper(pattern, source, i, j, scale, tolerance);
+                    if (res.length == 2){
+                        //int[] res = new int[]{j,i};
+                        return res;
                     }
                 } else {
-                    System.out.println("No first pixel match.");
+                    //System.out.println("No first pixel match.");
                 }
             }
         }
-        return strResult;
+        return new int[0];
     }
 
-    public static String compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
+    public static int[] compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
         int pii = 0;
@@ -218,23 +239,27 @@ public class Spims {
                 pii++;
                 sii++;
                 //System.out.println("Got through first comparison");
-            } /*else if (compareUpWidth(pattern[pii], source[i+sii-1], j, scale, tolerance)) {
+            /*} else if (compareUpWidth(pattern[pii], source[i+sii-1], j, scale, tolerance)) {
                 pii++;
             } else if (compareUpWidth(pattern[pii], source[i+sii-2], j, scale, tolerance)) {
+                pii++;*/
+            } else if (compareBetweenHeights(pattern, pii, source, (i+sii), j, scale, tolerance)) {
                 pii++;
-            }*/ else if (compareUpWidth(pattern[pii], source[i+sii+1], j, scale, tolerance)) {
-                sii++;
-            } else if (compareBetweenHeights(pattern, source, (i+sii), j, scale, tolerance)) {
-                pii++;
+            } else if (!((i+sii+1) >= source.length)){
+                if (compareUpWidth(pattern[pii], source[i+sii+1], j, scale, tolerance)) {
+                    sii++;
+                } else {
+                    return new int[0];
+                }
             } else {
                 /*System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
                     "Source Pixel =  ("+source[ii][j+sjj].r+", "+source[ii][j+sjj].g+", "+source[ii][j+sjj].b+")\n"+
                     "Pattern Pixel = ("+pattern[ii][pjj].r+", "+pattern[ii][pjj].g+", "+pattern[ii][pjj].b+")\n");*/
-                return "false";
+                return new int[0];
             }
 
         }
-        return "true";
+        return new int[]{j,i};
     }
 
     public static boolean compareUpWidth(Pixel[] pattern, Pixel[] source, int j, int scale, int tolerance){
@@ -285,7 +310,7 @@ public class Spims {
         return true;
     }
 
-    public static boolean compareBetweenHeights(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
+    public static boolean compareBetweenHeights(Pixel[][] pattern, int pi, Pixel[][] source, int si, int j, int scale, int tolerance) {
         int sjj = 0;
         int pjj = 0;
         //System.out.println("OH YEAAAAAAAH --------------------------------------");
@@ -295,27 +320,26 @@ public class Spims {
                 pjj++;
                     //}
                     //if (Pixel.isSimilar(source[i][j+sjj-1])
-            } else if (Pixel.getBetween(source[i][j+sjj], source[i+1][j+sjj], pattern[i][pjj], tolerance)) {
+            } else if (Pixel.getBetween(source[si][j+sjj], source[si+1][j+sjj], pattern[pi][pjj], tolerance)) {
                 //System.out.println("getBetween IF ++++++++++++++++++++++++++++++");
                 pjj++;
                 sjj++;
-            } else if (Pixel.getBetween(source[i][j+sjj], source[i-1][j+sjj], pattern[i][pjj], tolerance)) {
+            } else if (Pixel.getBetween(source[si][j+sjj], source[si-1][j+sjj], pattern[pi][pjj], tolerance)) {
                 //System.out.println("getBetween ELSE ++++++++++++++++++++++++++++");
                 //sjj++;
                 pjj++;
             } else {
-                System.out.println("fuck"); 
                 return false;
             }
         }
         return true;
     }
 
-    public static void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+    public static int[] compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         System.out.println();
         System.out.println("TODO: implement compareScaleDown");
         System.out.println();
-        return;
+        return new int[0];
     }
 
     public static void debugPixels(Pixel[][] pattern, Pixel[][] source){
@@ -362,33 +386,16 @@ public class Spims {
         return;
     }
 
-    public static void printResults(int[] results){
+    public static void printResults(String pattern, String source, int width, int height, int[] result){
     	//TODO Check number of results
-    	System.out.println("");
-    	for (int i = 0; i < results.length; i = i+4) {
-    		System.out.println("" + results[i] + " matches " +results[i+1] + 
-    			" at topleft " + results[i+2] + " bottomright " + results[i+3]);
-    	}
-    	return;
+    	//for (int i = 0; i < results.length; i = i+4) {
+        if (result.length == 0){
+            return;
+        } else {
+    		System.out.println("" + pattern + " matches " + source + 
+    			" at " + width + "x" + height + "+" + result[0] + "+" + result[1]);
+            return;
+        }
+        //}
     }
-    /**
-     *THEORY: Like numbers should be near others. 
-     *30	 36	  20          50
-     *30 31 31 36 35 21 20 21 20 49 50
-     */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
