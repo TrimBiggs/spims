@@ -2,6 +2,7 @@ import java.io.*; //??? not sure
 import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
 public class Spims {
 
@@ -11,11 +12,13 @@ public class Spims {
     public static void main(String[] args) {
     	String patternFile = "";
     	String sourceFile = "";
+      File pattern;
+      File source;
         int[] results = new int[1];
         int tolerance = 60;
         int[] result;
 
-		//Less than apprpriate number of arguments given                                                                                                                                                                                                    
+		//Less than apprpriate number of arguments given
     	if (args.length < 4) {
             System.err.print("Error: Expected at least 4 inputs.\n"+
     			"Got " + args.length + ": ");
@@ -25,67 +28,118 @@ public class Spims {
             System.out.println();
     		return;
     	}
-        //TODO Modify to take in more arguments and check validity/flags
-    	if (args[0].equals("-p")) {
 
+      boolean badInput = false;
+        //TODO Modify to take in more arguments and check validity/flags
+    	if (!args[0].equals("-p") && !args[0].equals("-pdir")) {
+        System.err.println("Invalid flag provided: " + args[0]);
+        badInput = true;
     	}
+      if(!args[2].equals("-s") && !args[2].equals("-sdir")) {
+        System.err.println("Invalid flag provided: " + args[2]);
+        badInput = true;
+      }
+
     	//Do a search on the '-p' and '-s' flags
     	if (args.length == 4) {
 	    //args[0] should be -p
-    		patternFile = args[1];
+    		pattern = new File(args[1]);
 	    //args[2] should be -s
-    		sourceFile = args[3];
+    		source = new File(args[3]);
     	}
-		//TODO Separate input and output into two if statements to have better error messages 
-    	if (!(patternFile.toLowerCase().endsWith(".png") ||
-    		  patternFile.toLowerCase().endsWith(".gif") ||
-    		  patternFile.toLowerCase().endsWith(".jpg"))) {
-    		System.err.println("Error: Expected pattern input with extension .png, .jpg, or .gif.\n"+
-    			"Got " + patternFile);
-    		return;
-    	}
-    	if (!(sourceFile.toLowerCase().endsWith(".png") ||
-    		  sourceFile.toLowerCase().endsWith(".gif") ||
-    		  sourceFile.toLowerCase().endsWith(".jpg"))) {
-    		System.err.println("Error: Expected source input with extension .png, .jpg, or .gif.\n"+
-    			"Got " + sourceFile);
-    		return;
-    	}
-    
+      else{
+        System.err.println("Too many arguments. Expected 4 got " + args.length);
+        badInput = true;
+        //stupid hack to make java convinced the vars are initialized
+        pattern = null;
+        source = null;
+      }
+
+      if(badInput){ return; }
+
+		//TODO Separate input and output into two if statements to have better error messages
+    	// if (!(patternFile.toLowerCase().endsWith(".png") ||
+    	// 	  patternFile.toLowerCase().endsWith(".gif") ||
+    	// 	  patternFile.toLowerCase().endsWith(".jpg"))) {
+    	// 	System.err.println("Error: Expected pattern input with extension .png, .jpg, or .gif.\n"+
+    	// 		"Got " + patternFile);
+    	// 	return;
+    	// }
+    	// if (!(sourceFile.toLowerCase().endsWith(".png") ||
+    	// 	  sourceFile.toLowerCase().endsWith(".gif") ||
+    	// 	  sourceFile.toLowerCase().endsWith(".jpg"))) {
+    	// 	System.err.println("Error: Expected source input with extension .png, .jpg, or .gif.\n"+
+    	// 		"Got " + sourceFile);
+    	// 	return;
+    	// }
+
+      File[] patterns;
+      File[] sources;
+      ImageFilter filter = new ImageFilter();
+
+      if (args[0].equals("-pdir") && pattern.isDirectory()){ patterns = pattern.listFiles(filter); }
+      else if(args[0].equals("-p") && !pattern.isDirectory()){ patterns = new File[]{pattern}; }
+      else{
+        System.err.println("Pattern input does not match flag. Program terminating.");
+        return;
+      }
+      if (args[2].equals("-sdir") && source.isDirectory()){ sources = source.listFiles(filter); }
+      else if(args[2].equals("-s") && !source.isDirectory()){ sources = new File[]{source}; }
+      else{
+        System.err.println("Source input does not match flag. Program terminating.");
+        return;
+      }
+
+      //TODO: Create more informative/specific error messages
+      if(patterns.length == 0 || !filter.accept(patterns[0])){
+        System.err.println("Error: Expected pattern input(s) with extension .png, .jpg, or .gif.");
+        return;
+      }
+      if(sources.length == 0 || !filter.accept(sources[0])){
+        System.err.println("Error: Expected source input(s) with extension .png, .jpg, or .gif.");
+        return;
+      }
+
     	BufferedImage patternImg = null;
     	BufferedImage sourceImg = null;
+      File curPattern;
+      File curSource;
 
-    	try{
-    		patternImg = ImageIO.read(new File(patternFile));
-    		sourceImg = ImageIO.read(new File(sourceFile));
-    		int[][] patternInts = new int[patternImg.getHeight()][patternImg.getWidth()];
-    		int[][] sourceInts = new int[sourceImg.getHeight()][sourceImg.getWidth()];
+      for(int x = 0; x < patterns.length; x++){
+        curPattern = patterns[x];
+        for(int y = 0; y < sources.length; y++){
+          curSource = sources[y];
+        	try{
+        		patternImg = ImageIO.read(curPattern);
+        		sourceImg = ImageIO.read(curSource);
+        		int[][] patternInts = new int[patternImg.getHeight()][patternImg.getWidth()];
+        		int[][] sourceInts = new int[sourceImg.getHeight()][sourceImg.getWidth()];
 
-            //Create integer arrays of pattern and source
-            for(int i = 0; i < patternInts.length; i++){
-                for(int j = 0; j < patternInts[0].length; j++){
-                    patternInts[i][j] = patternImg.getRGB(j,i);
+                //Create integer arrays of pattern and source
+                for(int i = 0; i < patternInts.length; i++){
+                    for(int j = 0; j < patternInts[0].length; j++){
+                        patternInts[i][j] = patternImg.getRGB(j,i);
+                    }
                 }
-            }
-            for(int i = 0; i < sourceInts.length; i++){
-                for(int j = 0; j < sourceInts[0].length; j++){
-                    sourceInts[i][j] = sourceImg.getRGB(j,i);
+                for(int i = 0; i < sourceInts.length; i++){
+                    for(int j = 0; j < sourceInts[0].length; j++){
+                        sourceInts[i][j] = sourceImg.getRGB(j,i);
+                    }
                 }
-            }
 
-            Pixel[][] patternPixels = new Pixel[patternImg.getHeight()][patternImg.getWidth()];
-            Pixel[][] sourcePixels = new Pixel[sourceImg.getHeight()][sourceImg.getWidth()];
-            // System.out.println(pixels1.length);
-            for(int i = 0; i < patternPixels.length; i++){
-                for(int j = 0; j < patternPixels[i].length; j++){
-                    patternPixels[i][j] = new Pixel(patternImg.getRGB(j,i));
+                Pixel[][] patternPixels = new Pixel[patternImg.getHeight()][patternImg.getWidth()];
+                Pixel[][] sourcePixels = new Pixel[sourceImg.getHeight()][sourceImg.getWidth()];
+                // System.out.println(pixels1.length);
+                for(int i = 0; i < patternPixels.length; i++){
+                    for(int j = 0; j < patternPixels[i].length; j++){
+                        patternPixels[i][j] = new Pixel(patternImg.getRGB(j,i));
+                    }
                 }
-            }
-            for(int i = 0; i < sourcePixels.length; i++){
-                for(int j = 0; j < sourcePixels[i].length; j++){
-                    sourcePixels[i][j] = new Pixel(sourceImg.getRGB(j,i));
+                for(int i = 0; i < sourcePixels.length; i++){
+                    for(int j = 0; j < sourcePixels[i].length; j++){
+                        sourcePixels[i][j] = new Pixel(sourceImg.getRGB(j,i));
+                    }
                 }
-            }
 
             //If images are exact width/height, compare them
     		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
@@ -113,8 +167,8 @@ public class Spims {
                 result = new int[0];
             }
 
-            patternFile = patternFile.substring(patternFile.lastIndexOf("/") + 1);
-            sourceFile = sourceFile.substring(sourceFile.lastIndexOf("/") + 1);
+                patternFile = curPattern.getName().substring(patternFile.lastIndexOf("/") + 1);
+                sourceFile = curSource.getName().substring(sourceFile.lastIndexOf("/") + 1);
 
             //This should take in array of type Results[]
             printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
@@ -176,7 +230,7 @@ public class Spims {
         //if we can't find anything, return false
         return new int[0];
     }
-    
+
     public static int[] justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
         int[] result;
@@ -263,7 +317,7 @@ public class Spims {
     }
 
     public static boolean compareUpWidth(Pixel[] pattern, Pixel[] source, int j, int scale, int tolerance){
-        int patternLength = pattern.length; 
+        int patternLength = pattern.length;
         int sjj = 0;
         int pjj = 0;
         while (pjj < patternLength) {
@@ -279,7 +333,7 @@ public class Spims {
             } else if (Pixel.isSimilar(source[j+sjj], pattern[pjj+1], tolerance)      ||
                        Pixel.getBetween(source[j+sjj], source[j+sjj+1], pattern[pjj], tolerance) ){
                        //Pixel.isSimilar(Pixel.getQuotient(source[j+sjj], scale), pattern[pjj], tolerance)) {
-                
+
                 pjj++;
             } else if (Pixel.isSimilar(source[j+sjj+1], pattern[pjj], tolerance)) {
                 sjj++;
@@ -392,7 +446,7 @@ public class Spims {
         if (result.length == 0){
             return;
         } else {
-    		System.out.println("" + pattern + " matches " + source + 
+    		System.out.println("" + pattern + " matches " + source +
     			" at " + width + "x" + height + "+" + result[0] + "+" + result[1]);
             return;
         }
