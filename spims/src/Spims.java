@@ -165,8 +165,8 @@ public class Spims {
                     result = new int[0];
                 }
 
-                patternFile = patternFile.substring(patternFile.lastIndexOf("/") + 1);
-                sourceFile = sourceFile.substring(sourceFile.lastIndexOf("/") + 1);
+                patternFile = curPattern.getName().substring(patternFile.lastIndexOf("/") + 1);
+                sourceFile = curSource.getName().substring(sourceFile.lastIndexOf("/") + 1);
 
                 printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
 
