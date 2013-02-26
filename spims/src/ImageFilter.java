@@ -10,7 +10,8 @@ public class ImageFilter implements FileFilter{
 
   public boolean accept(File f){
     //ignore hidden files that might be automatically generated
-    if(f.getName().toLowerCase().startsWith(".")){ return false; }
+    if(f.getName().toLowerCase().startsWith(".") ||
+       f.getName().endsWith("~")){ return false; }
 
     for(int i = 0; i < imageTypes.length; i++){
       if(f.getName().toLowerCase().endsWith(imageTypes[i])){ return true; }
