@@ -77,10 +77,18 @@ public class Spims {
       File[] sources;
       ImageFilter filter = new ImageFilter();
 
-      if (pattern.isDirectory()){ patterns = pattern.listFiles(filter); }
-      else{patterns = new File[]{pattern}; }
-      if (source.isDirectory()){ sources = source.listFiles(filter); }
-      else{ sources = new File[]{source}; }
+      if (args[0].equals("-pdir") && pattern.isDirectory()){ patterns = pattern.listFiles(filter); }
+      else if(args[0].equals("-p") && !pattern.isDirectory()){ patterns = new File[]{pattern}; }
+      else{
+        System.err.println("Pattern input does not match flag. Program terminating.");
+        return;
+      }
+      if (args[2].equals("-sdir") && source.isDirectory()){ sources = source.listFiles(filter); }
+      else if(args[2].equals("-s") && !source.isDirectory()){ sources = new File[]{source}; }
+      else{
+        System.err.println("Source input does not match flag. Program terminating.");
+        return;
+      }
 
       //TODO: Create more informative/specific error messages
       if(patterns.length == 0 || !filter.accept(patterns[0])){

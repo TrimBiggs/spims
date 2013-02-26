@@ -12,6 +12,8 @@ public class ImageFilter implements FileFilter{
     for(int i = 0; i < imageTypes.length; i++){
       if(f.getName().toLowerCase().endsWith(imageTypes[i])){ return true; }
     }
+    System.err.println("Found invalid input for file " + f.getName());
+    System.exit(0);
     return false;
   }
 }
