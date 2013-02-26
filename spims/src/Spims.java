@@ -90,20 +90,22 @@ public class Spims {
             //If images are exact width/height, compare them
     		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
 				//Check if any results, if not call compareScaleUp()
-                System.out.println("In compareExact(...) function.");
+                //System.out.println("In compareExact(...) function.");
     			result = compareExact(sourceInts, patternInts);
                 if (result.length == 0) {
+                    //System.out.println("In compareNoScale(...) function.");
                     result = compareNoScale(patternPixels, sourcePixels, tolerance);
                     if (result.length == 0) {
+                        //System.out.println("In compareScaleUp(...) function.");
                         //result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                     }
                 }
     		} else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
-                System.out.println("In compareNoScale(...) function.");
+                //System.out.println("In compareNoScale(...) function.");
                 result = compareNoScale(patternPixels, sourcePixels, tolerance);
                 
                     /*if (result.length == 0){
-                        System.out.println("In compareScaleUp(...) function.");
+                        //System.out.println("In compareScaleUp(...) function.");
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                         //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
                     }*/
@@ -114,15 +116,13 @@ public class Spims {
             patternFile = patternFile.substring(patternFile.lastIndexOf("/") + 1);
             sourceFile = sourceFile.substring(sourceFile.lastIndexOf("/") + 1);
 
+            //This should take in array of type Results[]
             printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
 
 
             //debugInts(patternInts, sourceInts);
-            System.out.println();
             //debugPixels(patternPixels, sourcePixels);
 
-    		//TODO: This takes in the array or whatever 
-    		//printResults(results);
     	}
     	catch (Exception e){
     		//System.err.println("Error: " + e.getMessage());

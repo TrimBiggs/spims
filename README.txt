@@ -21,22 +21,20 @@ HOW TO COMPILE/RUN
 ------------------
 Compile:
 In "spims" directory, run command:
-	$  javac Spims.java
+    $  javac Spims.java
 
 Run:
-//TODO !!! : Make an executable JAR file with this
 In "spims" directory, run command:
-	$  ./spims -p <file1> -s <file2>
+    $  ./spims -p <file1> -s <file2>
 
 where
-	<file1> is the name of an existing file in JPEG, PNG, or
+    <file1> is the name of an existing file in JPEG, PNG, or
     GIF format without animation (the "pattern image")
 
     <file2> is the name of an existing file in JPEG, PNG, or
     GIF format without animation (the "source image")
 
 
-
 NOTE
 ----
-This program was created entirely in Java using Java's default libraries.
+This program was created entirely in Java using Java's built-in libraries.
