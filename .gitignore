@@ -6,6 +6,9 @@ spims/.project
 .class
 Pixel.class
 Spims.class
+ImageFilter.class
+MatchData.class
+Outputter.class
 Spims.java~
 Spims.class~
 .gitignore~
