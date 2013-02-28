@@ -2,20 +2,22 @@ import java.io.*; //??? not sure
 import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
+
 
 public class Spims {
 
     /**
      * @param args
      */
+    private static Outputter output = new Outputter();
     public static void main(String[] args) {
     	String patternFile = "";
     	String sourceFile = "";
-      File pattern;
-      File source;
+        File pattern;
+        File source;
         int[] results = new int[1];
-        int tolerance = 60;
+        int tolerance = 30;
+        int gifTolerance = 60;
         int[] result;
 
 		//Less than apprpriate number of arguments given
@@ -29,16 +31,16 @@ public class Spims {
     		return;
     	}
 
-      boolean badInput = false;
+        boolean badInput = false;
         //TODO Modify to take in more arguments and check validity/flags
     	if (!args[0].equals("-p") && !args[0].equals("-pdir")) {
-        System.err.println("Invalid flag provided: " + args[0]);
-        badInput = true;
+            System.err.println("Invalid flag provided: " + args[0]);
+            return;
     	}
-      if(!args[2].equals("-s") && !args[2].equals("-sdir")) {
-        System.err.println("Invalid flag provided: " + args[2]);
-        badInput = true;
-      }
+        if(!args[2].equals("-s") && !args[2].equals("-sdir")) {
+            System.err.println("Invalid flag provided: " + args[2]);
+            return;
+        }
 
     	//Do a search on the '-p' and '-s' flags
     	if (args.length == 4) {
@@ -49,37 +51,19 @@ public class Spims {
     	}
       else{
         System.err.println("Too many arguments. Expected 4 got " + args.length);
-        badInput = true;
+        return;
         //stupid hack to make java convinced the vars are initialized
-        pattern = null;
-        source = null;
       }
-
-      if(badInput){ return; }
-
-		//TODO Separate input and output into two if statements to have better error messages
-    	// if (!(patternFile.toLowerCase().endsWith(".png") ||
-    	// 	  patternFile.toLowerCase().endsWith(".gif") ||
-    	// 	  patternFile.toLowerCase().endsWith(".jpg"))) {
-    	// 	System.err.println("Error: Expected pattern input with extension .png, .jpg, or .gif.\n"+
-    	// 		"Got " + patternFile);
-    	// 	return;
-    	// }
-    	// if (!(sourceFile.toLowerCase().endsWith(".png") ||
-    	// 	  sourceFile.toLowerCase().endsWith(".gif") ||
-    	// 	  sourceFile.toLowerCase().endsWith(".jpg"))) {
-    	// 	System.err.println("Error: Expected source input with extension .png, .jpg, or .gif.\n"+
-    	// 		"Got " + sourceFile);
-    	// 	return;
-    	// }
 
       File[] patterns;
       File[] sources;
       ImageFilter filter = new ImageFilter();
 
-      if (args[0].equals("-pdir") && pattern.isDirectory()){ patterns = pattern.listFiles(filter); }
-      else if(args[0].equals("-p") && !pattern.isDirectory()){ patterns = new File[]{pattern}; }
-      else{
+      if (args[0].equals("-pdir") && pattern.isDirectory()){
+        patterns = pattern.listFiles(filter);
+      } else if(args[0].equals("-p") && !pattern.isDirectory()){ 
+        patterns = new File[]{pattern};
+      } else {
         System.err.println("Pattern input does not match flag. Program terminating.");
         return;
       }
@@ -102,13 +86,14 @@ public class Spims {
 
     	BufferedImage patternImg = null;
     	BufferedImage sourceImg = null;
-      File curPattern;
-      File curSource;
+        File curPattern;
+        File curSource;
+        int outputSizeBefore;
 
       for(int x = 0; x < patterns.length; x++){
         curPattern = patterns[x];
         for(int y = 0; y < sources.length; y++){
-          curSource = sources[y];
+            curSource = sources[y];
         	try{
         		patternImg = ImageIO.read(curPattern);
         		sourceImg = ImageIO.read(curSource);
@@ -130,77 +115,94 @@ public class Spims {
                 Pixel[][] patternPixels = new Pixel[patternImg.getHeight()][patternImg.getWidth()];
                 Pixel[][] sourcePixels = new Pixel[sourceImg.getHeight()][sourceImg.getWidth()];
                 // System.out.println(pixels1.length);
-                for(int i = 0; i < patternPixels.length; i++){
-                    for(int j = 0; j < patternPixels[i].length; j++){
+                for(int i = 0; i < patternPixels.length; i++) {
+                    for(int j = 0; j < patternPixels[i].length; j++) {
                         patternPixels[i][j] = new Pixel(patternImg.getRGB(j,i));
                     }
                 }
-                for(int i = 0; i < sourcePixels.length; i++){
-                    for(int j = 0; j < sourcePixels[i].length; j++){
+                for(int i = 0; i < sourcePixels.length; i++) {
+                    for(int j = 0; j < sourcePixels[i].length; j++) {
                         sourcePixels[i][j] = new Pixel(sourceImg.getRGB(j,i));
                     }
                 }
 
-            //If images are exact width/height, compare them
-    		if (patternImg.getWidth() == sourceImg.getWidth() && patternImg.getHeight() == sourceImg.getHeight()){
-				//Check if any results, if not call compareScaleUp()
-                //System.out.println("In compareExact(...) function.");
-    			result = compareExact(sourceInts, patternInts);
-                if (result.length == 0) {
-                    //System.out.println("In compareNoScale(...) function.");
-                    result = compareNoScale(patternPixels, sourcePixels, tolerance);
-                    if (result.length == 0) {
+                patternFile = curPattern.getName().substring(patternFile.lastIndexOf("/") + 1);
+                sourceFile = curSource.getName().substring(sourceFile.lastIndexOf("/") + 1);
+                //System.out.println(patternFile);
+                //System.out.println(sourceFile);
+                int patternWidth = patternImg.getWidth();
+                int patternHeight = patternImg.getHeight();
+
+                //If images are exact width/height, compare them
+                outputSizeBefore = output.size();
+                
+                int givenTolerance = tolerance;
+
+                //check for gifs
+                if (patternFile.endsWith("gif") || sourceFile.endsWith("gif")) {
+                    givenTolerance = gifTolerance;
+                }
+
+
+                if (patternWidth == sourceImg.getWidth() && patternHeight == sourceImg.getHeight()) {
+				    //Check if any results, if not call compareScaleUp()
+                    //System.out.println("In compareExact(...) function.");
+                    compareExact(sourceInts, patternInts, patternFile, sourceFile, patternWidth, patternHeight);
+                    if (output.size() == outputSizeBefore) {
+                        //System.out.println("In compareNoScale(...) function.");
+                        compareNoScale(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
+                        if (output.size() == outputSizeBefore) {
                         //System.out.println("In compareScaleUp(...) function.");
                         //result = compareScaleUp(patternPixels, sourcePixels, tolerance);
+                        }
                     }
-                }
-    		} else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
+                } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
                 //System.out.println("In compareNoScale(...) function.");
-                result = compareNoScale(patternPixels, sourcePixels, tolerance);
-                
+                    compareNoScale(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
+
                     /*if (result.length == 0){
                         //System.out.println("In compareScaleUp(...) function.");
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                         //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
                     }*/
-            } else {
-                result = new int[0];
+                }//else compareScale(); .....
+
+
+                //This should take in array of type Results[]
+                //printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
+
+                //debugInts(patternInts, sourceInts);
+                //debugPixels(patternPixels, sourcePixels);
+
             }
-
-                patternFile = curPattern.getName().substring(patternFile.lastIndexOf("/") + 1);
-                sourceFile = curSource.getName().substring(sourceFile.lastIndexOf("/") + 1);
-
-            //This should take in array of type Results[]
-            printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
-
-
-            //debugInts(patternInts, sourceInts);
-            //debugPixels(patternPixels, sourcePixels);
-
-    	}
-    	catch (Exception e){
-    		//System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-    	}
-    	//catch (IOException e){System.err.println(e);}
+            catch (Exception e){
+    		    System.err.println("Error: " + e.getMessage());
+                //e.printStackTrace();
+            }
+    	    //catch (IOException e){System.err.println(e);}
+        }
+      }
+      output.output();
     }
 
 
+
     //Call this if same size arrays and arrays within are same length
-    public static int[] compareExact(int[][] pattern, int[][] source) {
+    public static void compareExact(int[][] pattern, int[][] source, String pname, String sname, int pwidth, int pheight) {
         for (int i = 0; i < pattern.length; i++){
             for (int j = 0; j < pattern[i].length; j++){
                 if (pattern[i][j] != source[i][j]){
-                    return new int[0];
+                    return;
                 }
             }
         }
-        return new int[]{0,0};
+        output.add(pname, sname, pwidth, pheight, 0, 0);
     }
 
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static int[] compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+    public static void compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance, 
+                                       String pname, String sname, int pwidth, int pheight) {
         //setup return string
         String strResult = "false";
         int patternLengthi = pattern.length;
@@ -211,8 +213,8 @@ public class Spims {
 
         //go through each row and each column
         //TODO: Maybe computer the (source.length - pattern.length) things outside
-        for (int i = 0; i < (sourceLengthi - patternLengthi); i++){
-            for (int j = 0; j < (sourceLengthj - patternLengthj); j++){
+        for (int i = 0; i <= (sourceLengthi - patternLengthi); i++){
+            for (int j = 0; j <= (sourceLengthj - patternLengthj); j++){
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
                 if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
@@ -222,13 +224,13 @@ public class Spims {
                     res = justCompare(pattern, source, i, j, tolerance);
                     //if we have, then return true
                     if (res.length == 2){
-                        return res;
+                        output.add(pname, sname, pwidth, pheight, j, i);
                     }
                 }
             }
         }
         //if we can't find anything, return false
-        return new int[0];
+        return;
     }
 
     public static int[] justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
