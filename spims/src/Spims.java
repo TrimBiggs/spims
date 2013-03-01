@@ -17,7 +17,7 @@ public class Spims {
         File source;
         int[] results = new int[1];
         int tolerance = 30;
-        int gifTolerance = 60;
+        int gifTolerance = 45;
         int[] result;
 
 		//Less than apprpriate number of arguments given
