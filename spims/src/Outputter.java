@@ -51,20 +51,21 @@ public class Outputter{
     //FENCEPOSTING on width and height?
     public void filter(){
         //compare each match to every match that comes after it
-       for(Iterator<MatchData> iter = myMatches.iterator(); iter.hasNext();){
-           MatchData first = iter.next();
-           for(Iterator<MatchData> secondIter = (Iterator<MatchData>) iter.clone(); secondIter.hasNext();){
-               MatchData second = secondIter.next();
+       for(int i = 0; i < myMatches.size();){
+           MatchData first = myMatches.get(i);
+           for(int j = i + 1; j < myMatches.size(); j++){
+               MatchData second = myMatches.get(j);
                if(first.pattern.equals(second.pattern) && first.source.equals(second.source)){
                    //find the (possibly non-existant) rectangle where the two matches overlap
-                   int width = min(first.x2, second.x2) - max(first.x, second.x) + 1;
-                   int height = min(first.y2, second.y2) - max(first.y, second.y) + 1;
+                   int width = Math.min(first.x2, second.x2) - Math.max(first.x, second.x) + 1;
+                   int height = Math.min(first.y2, second.y2) - Math.max(first.y, second.y) + 1;
                    if(width > 0 && height > 0){
                        float crossover = (float)(width * height);
                        //is it greater than half the size of the first match?
                        if(crossover > .5 * ((float) first.size)){
                            //get rid of the first match
-                           iter.remove();
+                           myMatches.remove(i);
+                           i--;
                            break;
                        }
                    }
