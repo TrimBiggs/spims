@@ -173,9 +173,11 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
                     if (output.size() == outputSizeBefore) {
                         //System.out.println("In compareNoScale(...) function.");
                         compareNoScale(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
+                        System.out.println("Output size is now the same 1");
                         if (output.size() == outputSizeBefore) {
                         //System.out.println("In compareScaleUp(...) function.");
-                        //result = compareScaleUp(patternPixels, sourcePixels, tolerance);
+                            System.out.println("Output size is now the same 2");
+                            compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
                         }
                     }
                 } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
@@ -187,7 +189,8 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                         //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
                     }*/
-                }//else compareScale(); .....
+                }else 
+                compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
 
 
                 //This should take in array of type Results[]
@@ -273,7 +276,8 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
 	//TODO Implement
 	//Else - LOOOOONG check
     public static void compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance, 
-                                       String pname, String sname, int pwidth, int pheight) {
+                                       String pname, String sname, int pwidth, int pheight){
+                                       //Pixel[][] pattern, Pixel[][] source, int tolerance) {
         int scale = 2;
 
         int patternLengthi = pattern.length;
@@ -287,11 +291,12 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
                 if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
-                    System.out.println("Pixel match at (" + j + ", " + i + ")");
+                    //System.out.println("Pixel match at (" + j + ", " + i + ")");
                     // if so, call helper to see if we have found the match spot
-                    res = compareUpHelper(pattern, source, i, j, scale, tolerance);
-                    if (res.length == 2){
+                    
+                    if (compareUpHelper(pattern, source, i, j, scale, tolerance)){
                         //int[] res = new int[]{j,i};
+                        //return res;
                         output.add(pname, sname, pwidth, pheight, j, i);
                     }
                 } else {
@@ -302,7 +307,7 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
         return;
     }
 
-    public static int[] compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
+    public static boolean compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
         int pii = 0;
@@ -327,17 +332,17 @@ System.out.println("Mime Type of " + pattern.getName() + " is " +
                 if (compareUpWidth(pattern[pii], source[i+sii+1], j, scale, tolerance)) {
                     sii++;
                 } else {
-                    return new int[0];
+                    return false;// new int[0];
                 }
             } else {
                 /*System.out.println("Failed at source: (" + ii + ","+(j+sjj)+") and pattern: ("+ii+", "+pjj+")\n"+
                     "Source Pixel =  ("+source[ii][j+sjj].r+", "+source[ii][j+sjj].g+", "+source[ii][j+sjj].b+")\n"+
                     "Pattern Pixel = ("+pattern[ii][pjj].r+", "+pattern[ii][pjj].g+", "+pattern[ii][pjj].b+")\n");*/
-                return new int[0];
+                return false;// new int[0];
             }
 
         }
-        return new int[]{j,i};
+        return true;
     }
 
     public static boolean compareUpWidth(Pixel[] pattern, Pixel[] source, int j, int scale, int tolerance){
