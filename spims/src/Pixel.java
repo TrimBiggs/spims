@@ -14,6 +14,34 @@ public class Pixel {
 		val = 0;
 	}
 
+	public static boolean isScaledSimilar(Pixel a, float left, float top, float right, float bottom, Pixel[][] other, int tolerance){
+       
+        float red = 0;
+        float green = 0;
+        float blue = 0;
+
+        //remember that "bottom" is a higher y value than "top"
+        float pixelArea = (right - left) * (bottom - top);
+
+        for(float y = Math.floor(top); y < bottom; y++){
+            for(float x = Math.floor(left); x < right; x++){
+
+                float width = Math.min(x + 1, right) - Math.max(x, left);
+                float height = Math.min(y + 1, bottom) - Math.max(y, top);
+                float overlap = width * height;
+                float weight = overlap / pixelArea
+                
+                Pixel current = other[(int) x][(int) y];
+
+                red += weight * current.r;
+                green += weight * current.g;
+                blue += weight * current.b;
+            }
+        }
+
+        return isSimilar(a, Pixel((int) (red + .5), (int) (green + .5), (int) (blue + .5)), tolerance);
+    }
+
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
 		return (Math.abs(a.r - b.r) <= tolerance) &&
 		(Math.abs(a.g - b.g) <= tolerance) &&

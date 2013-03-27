@@ -1,7 +1,11 @@
 import java.io.*; //??? not sure
+import java.io.InputStream;
 import javax.imageio.*;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import javax.activation.MimetypesFileTypeMap;
+import javax.swing.filechooser.FileSystemView;
 
 
 public class Spims {
@@ -48,6 +52,10 @@ public class Spims {
     		pattern = new File(args[1]);
 	    //args[2] should be -s
     		source = new File(args[3]);
+    System.out.println("Mime Type of " + pattern.getName() + " is " +
+                         new MimetypesFileTypeMap().getContentType(pattern));
+    System.out.println("Mime Type of " + source.getName() + " is " +
+                         new MimetypesFileTypeMap().getContentType(source));
     	}
       else{
         System.err.println("Too many arguments. Expected 4 got " + args.length);
@@ -75,6 +83,20 @@ public class Spims {
       }
 
       //TODO: Create more informative/specific error messages
+      /*ImageInputStream ptype = ImageIO.createImageInputStream(patterns[0]);
+      ImageInputStream stype = ImageIO.createImageInputStream(sources[0]);
+      for (ImageReader reader: ImageIO.getImageReaders(ptype)) {
+        System.out.printf("formatName: %s%n", reader.getFormatName());
+      }
+      for (ImageReader reader: ImageIO.getImageReaders(stype)) {
+        System.out.printf("formatName: %s%n", reader.getFormatName());
+      }
+
+      System.out.println("System Type description of " + pattern.getName() + " is " + 
+          FileSystemView.getFileSystemView().getSystemTypeDescription(pattern));
+System.out.println("Mime Type of " + pattern.getName() + " is " +
+          new MimetypesFileTypeMap().getContentType(pattern));
+*/
       if(patterns.length == 0 || !filter.accept(patterns[0])){
         System.err.println("Error: Expected pattern input(s) with extension .png, .jpg, or .gif.");
         return;
@@ -204,7 +226,6 @@ public class Spims {
     public static void compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance, 
                                        String pname, String sname, int pwidth, int pheight) {
         //setup return string
-        String strResult = "false";
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
         int sourceLengthi = source.length;
@@ -251,7 +272,8 @@ public class Spims {
 
 	//TODO Implement
 	//Else - LOOOOONG check
-    public static int[] compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+    public static void compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance, 
+                                       String pname, String sname, int pwidth, int pheight) {
         int scale = 2;
 
         int patternLengthi = pattern.length;
@@ -270,14 +292,14 @@ public class Spims {
                     res = compareUpHelper(pattern, source, i, j, scale, tolerance);
                     if (res.length == 2){
                         //int[] res = new int[]{j,i};
-                        return res;
+                        output.add(pname, sname, pwidth, pheight, j, i);
                     }
                 } else {
                     //System.out.println("No first pixel match.");
                 }
             }
         }
-        return new int[0];
+        return;
     }
 
     public static int[] compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
