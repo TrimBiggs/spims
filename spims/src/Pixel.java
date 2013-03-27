@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.Math;
 
 public class Pixel {
 	public Pixel(int p){
@@ -13,7 +14,7 @@ public class Pixel {
 		b = blue;
 		val = 0;
 	}
-
+	//a is pattern pixel, other is the image you will shrink (Source)
 	public static boolean isScaledSimilar(Pixel a, float left, float top, float right, float bottom, Pixel[][] other, int tolerance){
        
         float red = 0;
@@ -23,13 +24,13 @@ public class Pixel {
         //remember that "bottom" is a higher y value than "top"
         float pixelArea = (right - left) * (bottom - top);
 
-        for(float y = Math.floor(top); y < bottom; y++){
-            for(float x = Math.floor(left); x < right; x++){
+        for(float y = (float)((int)(top)); y < bottom; y++){
+            for(float x = (float)((int)(left)); x < right; x++){
 
                 float width = Math.min(x + 1, right) - Math.max(x, left);
                 float height = Math.min(y + 1, bottom) - Math.max(y, top);
                 float overlap = width * height;
-                float weight = overlap / pixelArea
+                float weight = overlap / pixelArea;
                 
                 Pixel current = other[(int) x][(int) y];
 
@@ -39,7 +40,7 @@ public class Pixel {
             }
         }
 
-        return isSimilar(a, Pixel((int) (red + .5), (int) (green + .5), (int) (blue + .5)), tolerance);
+        return isSimilar(a, new Pixel((int) (red + .5), (int) (green + .5), (int) (blue + .5)), tolerance);
     }
 
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
