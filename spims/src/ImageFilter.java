@@ -8,7 +8,7 @@ public class ImageFilter implements FileFilter{
   private String[] imageTypes;
 
   public ImageFilter(){
-    imageTypes = new String[]{"jpg", "png", "gif"};
+    imageTypes = new String[]{"jpg", "png", "gif", "jpeg"};
   }
 
   public boolean accept(File f){
@@ -24,8 +24,9 @@ public class ImageFilter implements FileFilter{
       while(irs.hasNext()){
         try{
           String ext = irs.next().getFormatName();
+          System.out.println(ext);
           for(int i = 0; i < imageTypes.length; i++){
-            if(ext.equals(imageTypes[i])){ return true; }
+            if(ext.toLowerCase().equals(imageTypes[i])) { return true; }
           }
         }catch(Exception e){ System.err.println("There was an error retrieving the format of the file. Program will terminate."); }
       }
