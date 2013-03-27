@@ -27,11 +27,10 @@ public class ImageFilter implements FileFilter{
           for(int i = 0; i < imageTypes.length; i++){
             if(ext.equals(imageTypes[i])){ return true; }
           }
-        }catch(Exception e){ System.err.println(e); }
+        }catch(Exception e){ System.err.println("There was an error retrieving the format of the file. Program will terminate."); }
       }
     }catch (Exception e){
-      System.err.println(e);
-      e.printStackTrace();
+      System.err.println("There was an error retrieving the format of the file. Program will terminate.");
     }
 
     //if notthing matches exit the program
