@@ -179,11 +179,8 @@ public class Spims {
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                         //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
                     }*/
-                }else
+                } else
                 compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
-
-                //This should take in array of type Results[]
-                //printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
 
                 //debugInts(patternInts, sourceInts);
                 //debugPixels(patternPixels, sourcePixels);
@@ -247,9 +244,8 @@ public class Spims {
                     //System.out.println("Pixel match at (" + j + ", " + i + ")");
                     // if so, call helper to see if we have found the match spot
                     //System.out.println("Pixel match at (" + j + ", " + i + ")");
-                    res = justCompare(pattern, source, i, j, tolerance);
                     //if we have, then return true
-                    if (res.length == 2){
+                    if (justCompare(pattern, source, i, j, tolerance)){
                         output.add(pname, sname, pwidth, pheight, j, i);
                     }
                 }
@@ -268,7 +264,7 @@ public class Spims {
     *
     * @return an array of ints showing the starting corner of the match
     */
-    public static int[] justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
+    public static boolean justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
         int[] result;
         for (int ii = 0; ii < pattern.length; ii++){
@@ -276,12 +272,11 @@ public class Spims {
                 //check if the pattern and source match
                 if (!(Pixel.isSimilar(pattern[ii][jj], source[i+ii][j+jj], tolerance))) {
                     //System.out.println("No Match");
-                    return new int[0];
+                    return false;
                 }
             }
         }
-        result = new int[]{j,i};
-        return result;
+        return true;
     }
 
 	//TODO Implement
@@ -358,6 +353,7 @@ public class Spims {
 
     public static boolean compareUpWidth(Pixel[] pattern, Pixel[] source, int j, int scale, int tolerance){
         int patternLength = pattern.length;
+        int sourceLength = source.length;
         int sjj = 0;
         int pjj = 0;
         while (pjj < patternLength) {
@@ -405,16 +401,18 @@ public class Spims {
     }
 
     public static boolean compareBetweenHeights(Pixel[][] pattern, int pi, Pixel[][] source, int si, int j, int scale, int tolerance) {
+        int patternLength = pattern.length;
+        int sourceLength = source.length;
         int sjj = 0;
         int pjj = 0;
-        //System.out.println("OH YEAAAAAAAH --------------------------------------");
-        while (pjj < pattern.length) {
-            if ((j+sjj) >= source.length){
+        while (pjj < patternLength) {
+            if ((j+sjj) >= sourceLength){
                     //if (Pixel.isSimilar(source[i][j+sjj-1], pattern[ii][pjj], tolerance)) {
                 pjj++;
                     //}
                     //if (Pixel.isSimilar(source[i][j+sjj-1])
-            } else if (Pixel.getBetween(source[si][j+sjj], source[si+1][j+sjj], pattern[pi][pjj], tolerance)) {
+            } else if (Pixel.getBetween(source[si][j+sjj], source[si+1][j+sjj], pattern[pi][pjj], tolerance) ||
+                        Pixel.isSimilar(source[si+1][j+sjj], pattern[pi][pjj], tolerance)) {
                 //System.out.println("getBetween IF ++++++++++++++++++++++++++++++");
                 pjj++;
                 sjj++;
@@ -429,11 +427,12 @@ public class Spims {
         return true;
     }
 
-    public static int[] compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
+
+    public static void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         System.out.println();
         System.out.println("TODO: implement compareScaleDown");
         System.out.println();
-        return new int[0];
+        return;
     }
 
     public static void debugPixels(Pixel[][] pattern, Pixel[][] source){
