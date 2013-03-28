@@ -1,12 +1,29 @@
 import java.io.*;
 
+/**
+*	Class Pixel holds an rgb value for a pixel in an image.
+* It has comparison functions to use with other pixels.
+*/
 public class Pixel {
+	/**
+	*	Constructor for class Pixel.
+	*
+	*	@param p The single int value representing the composite RGB value of the pixel.
+	*/
 	public Pixel(int p){
 		b = p & 0x0000FF;
 		g = (p & 0x00FF00) >> 8;
 		r = (p & 0xFF0000) >> 16;
 		val = p;
 	}
+
+	/**
+	*	Constructor for class Pixel.
+	*
+	* @param red R value for the pixel
+	* @param green G value for the pixel
+	* @param blue B value for the pixel
+	*/
 	public Pixel(int red, int green, int blue){
 		r = red;
 		g = green;
@@ -14,6 +31,15 @@ public class Pixel {
 		val = 0;
 	}
 
+	/**
+	*	Compares two Pixels to see if they are similar enough to be considered the same.
+	*
+	* @param a The first Pixel in the comparison
+	* @param b The second Pixel in the comparison
+	* @param tolerance An int representing a discrepancy that can exists between two pixels
+	* and still be considered 'similar' enough to be a match of eachother. This is to account
+	* for differences between format types and transformations an image may have undergone.
+	*/
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
 		return (Math.abs(a.r - b.r) <= tolerance) &&
 		(Math.abs(a.g - b.g) <= tolerance) &&

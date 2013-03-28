@@ -3,13 +3,26 @@ import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
-
+/**
+*   Spims is the main class of the image matching software.
+*   It accepts input, validates it, handles sending the input files
+*   to the appropriate algorithms, and then ensures appropriate
+*   output is printed with results.
+*
+*   @author Corey Hanson
+*   @author Tim Briggs
+*   @author Reed Lockwood
+*   @author Wen Cao
+*/
 public class Spims {
 
-    /**
-     * @param args
-     */
     private static Outputter output = new Outputter();
+
+    /**
+     * Main method of class Spims. Runs the program functions.
+     * @param args Arguments sent to the main method, files or directories to use,
+     * and indicitive flags telling whether inputs are directories or files
+     */
     public static void main(String[] args) {
     	String patternFile = "";
     	String sourceFile = "";
@@ -61,7 +74,7 @@ public class Spims {
 
       if (args[0].equals("-pdir") && pattern.isDirectory()){
         patterns = pattern.listFiles(filter);
-      } else if(args[0].equals("-p") && !pattern.isDirectory()){ 
+      } else if(args[0].equals("-p") && !pattern.isDirectory()){
         patterns = new File[]{pattern};
       } else {
         System.err.println("Pattern input does not match flag. Program terminating.");
@@ -135,7 +148,7 @@ public class Spims {
 
                 //If images are exact width/height, compare them
                 outputSizeBefore = output.size();
-                
+
                 int givenTolerance = tolerance;
 
                 //check for gifs
@@ -166,7 +179,7 @@ public class Spims {
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
                         //result = compareScaleDown(patternPixels, sourcePixels, tolerance);
                     }*/
-                }else 
+                }else
                 compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
 
                 //This should take in array of type Results[]
@@ -189,6 +202,18 @@ public class Spims {
 
 
     //Call this if same size arrays and arrays within are same length
+    /**
+    * Check to see if two images are the exact same image.
+    *
+    * @param pattern an Array of Pixels for each pixel in the pattern image
+    * @param source an Array of Pixels for each pixel in the source image
+    * @param pname the name of the pattern image
+    * @param sname the name of the source image
+    * @param pwidth width of the pattern image for output purposes
+    * @param pheight height of the pattern image for output purposes
+    *
+    * @return void; class's output object will be updated if there is a match
+    */
     public static void compareExact(int[][] pattern, int[][] source, String pname, String sname, int pwidth, int pheight) {
         for (int i = 0; i < pattern.length; i++){
             for (int j = 0; j < pattern[i].length; j++){
@@ -202,7 +227,7 @@ public class Spims {
 
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static void compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance, 
+    public static void compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance,
                                        String pname, String sname, int pwidth, int pheight) {
         //setup return string
         String strResult = "false";
@@ -234,6 +259,15 @@ public class Spims {
         return;
     }
 
+    /**
+    * @param pattern an Array of Pixels for each pixel in the pattern image
+    * @param source an Array of Pixels for each pixel in the source image
+    * @param i
+    * @param j
+    * @param tolerance and int representing how forgiving the algorithm will be when searching for equal pixels
+    *
+    * @return an array of ints showing the starting corner of the match
+    */
     public static int[] justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
         int[] result;
@@ -252,7 +286,7 @@ public class Spims {
 
 	//TODO Implement
 	//Else - LOOOOONG check
-    public static void compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance, 
+    public static void compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance,
                                        String pname, String sname, int pwidth, int pheight){
                                        //Pixel[][] pattern, Pixel[][] source, int tolerance) {
         int scale = 2;
@@ -270,7 +304,7 @@ public class Spims {
                 if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
                     //System.out.println("Pixel match at (" + j + ", " + i + ")");
                     // if so, call helper to see if we have found the match spot
-                    
+
                     if (compareUpHelper(pattern, source, i, j, scale, tolerance)){
                         //int[] res = new int[]{j,i};
                         //return res;

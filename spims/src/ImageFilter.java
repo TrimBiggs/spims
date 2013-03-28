@@ -4,13 +4,25 @@ import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
 import java.util.Iterator;
 
+/**
+* Class ImageFilter is FileFilter used to determine if input files
+* are of valid types.
+*/
 public class ImageFilter implements FileFilter{
-  private String[] imageTypes;
+  private final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
 
+  /**
+  * Contrusctor for class ImageFilter.
+  */
   public ImageFilter(){
-    imageTypes = new String[]{"jpg", "png", "gif", "jpeg"};
   }
 
+  /**
+  * Takes a file and gets the content type of that file to check for validity in the program.
+  *
+  * @param f The input File that is being checked for an appropraite type.
+  * @return true or false, whether or not the File is of type jpeg, png, or gif.
+  */
   public boolean accept(File f){
     //ignore hidden files that might be automatically generated
     if(f.getName().toLowerCase().startsWith(".") ||
@@ -18,15 +30,18 @@ public class ImageFilter implements FileFilter{
 
     Iterator<ImageReader> irs;
     try{
+      //Create ImageReaders for the image file
       ImageInputStream iis = ImageIO.createImageInputStream(f);
       irs = ImageIO.getImageReaders(iis);
 
       while(irs.hasNext()){
         try{
+          //Get the format of ImageInputStream
           String ext = irs.next().getFormatName();
-          System.out.println(ext);
-          for(int i = 0; i < imageTypes.length; i++){
-            if(ext.toLowerCase().equals(imageTypes[i])) { return true; }
+
+          //Check if format type is in the given array.
+          for(int i = 0; i < IMAGE_TYPES.length; i++){
+            if(ext.toLowerCase().equals(IMAGE_TYPES[i])) { return true; }
           }
         }catch(Exception e){ System.err.println("There was an error retrieving the format of the file. Program will terminate."); }
       }

@@ -60,7 +60,7 @@ public class Outputter{
                 for(int j = i+1; j < myMatches.size(); j++) {
                     MatchData second = myMatches.get(j);
                     if(first.pattern.equals(second.pattern) && first.source.equals(second.source)){
-                    
+
                         //find the (possibly non-existant) rectangle where the two matches overlap
                         int width = Math.min(first.x2, second.x2) - Math.max(first.x, second.x) + 1;
                         int height = Math.min(first.y2, second.y2) - Math.max(first.y, second.y) + 1;
@@ -117,6 +117,6 @@ public class Outputter{
                 System.out.println();
             }
             System.out.println(iter.next().toString());
-        }*/ 
+        }*/
     }
 }
