@@ -15,7 +15,7 @@ public class Pixel {
 		val = 0;
 	}
 	//a is pattern pixel, other is the image you will shrink (Source)
-	public static boolean isScaledSimilar(Pixel a, float left, float top, float right, float bottom, Pixel[][] other, int tolerance){
+	public static Pixel ShrinkHelper(float left, float top, float right, float bottom, Pixel[][] other){
        
         float red = 0;
         float green = 0;
@@ -40,7 +40,22 @@ public class Pixel {
             }
         }
 
-        return isSimilar(a, new Pixel((int) (red + .5), (int) (green + .5), (int) (blue + .5)), tolerance);
+        return new Pixel((int) (red + .5), (int) (green + .5), (int) (blue + .5));
+    }
+
+    public static void Shrink(Pixel[][] myImage, Pixel[][] target){
+        //ASSERT: target is smaller than myImage
+
+        for(int y = 0; y < target.length; y++){
+            for(int x = 0; x < target[0].length; x++){
+                target[x][y] = ShrinkHelper(((float) x) * ((float) myImage[0].length) / ((float) target[0].length),
+                                            ((float) y) * ((float) myImage.length) / ((float) target.length),
+                                            ((float) (x + 1)) * ((float) myImage[0].length) / ((float) target[0].length),
+                                            ((float) (y + 1)) * ((float) myImage.length) / ((float) target.length),
+                                            myImage);
+
+            }
+        }
     }
 
 	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
