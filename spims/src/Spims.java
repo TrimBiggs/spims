@@ -152,7 +152,7 @@ public class Spims {
                         //System.out.println("In compareNoScale(...) function.");
                         compareNoScale(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
                         System.out.println("Output size is now the same 1");
-                        if (output.size() == outputSizeBefore) {
+                        if (output.size() == outputSizeBefore && ! (patternWidth == 1 && patternHeight == 1)) {
                         //System.out.println("In compareScaleUp(...) function.");
                             System.out.println("Output size is now the same 2");
                             compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
@@ -161,7 +161,6 @@ public class Spims {
                 } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
                 //System.out.println("In compareNoScale(...) function.");
                     compareNoScale(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
-
                     /*if (result.length == 0){
                         //System.out.println("In compareScaleUp(...) function.");
                         result = compareScaleUp(patternPixels, sourcePixels, tolerance);
@@ -169,7 +168,6 @@ public class Spims {
                     }*/
                 }else 
                 compareScaleUp(patternPixels, sourcePixels, givenTolerance, patternFile, sourceFile, patternWidth, patternHeight);
-
 
                 //This should take in array of type Results[]
                 //printResults(patternFile, sourceFile, patternImg.getWidth(), patternImg.getHeight(), result);
