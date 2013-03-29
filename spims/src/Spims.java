@@ -27,8 +27,7 @@ public class Spims {
     	String patternFile = "";
     	String sourceFile = "";
         File pattern;
-        File source;
-        int[] results = new int[1];
+        File source; 
         int tolerance = 30;
         int gifTolerance = 45;
         int[] result;
@@ -282,7 +281,7 @@ public class Spims {
 	//TODO Implement
 	//Else - LOOOOONG check
     public static void compareScaleUp(Pixel[][] pattern, Pixel[][] source, int tolerance,
-                                       String pname, String sname, int pwidth, int pheight){
+                                      String pname, String sname, int pwidth, int pheight){
                                        //Pixel[][] pattern, Pixel[][] source, int tolerance) {
         int scale = 2;
 
@@ -427,6 +426,127 @@ public class Spims {
         return true;
     }
 
+    public static void compareSurroundingPixels(Pixel[][] pattern, Pixel[][] source, int sBaseHeightPointer, int sBaseWidthPointer, int scale, int tolerance) {
+        int pHeight = pattern.length;
+        int pWidth = pattern[0].length;
+        int sHeight = source.length;
+        int sWidth = source[0].length;
+
+        int pHeightPointer = 0;
+        int pWidthPointer = 0;
+        int sHeightPointer = sBaseHeightPointer;
+        int sWidthPointer = sBaseWidthPointer;
+        int scaleTemp = 4;
+        int scaleFound = scaleTemp;
+        while (pHeightPointer < pHeight) {
+            while (pWidthPointer < pWidth) {
+                if ((sWidth - sWidthPointer) == 1) {
+                    if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
+                        pWidthPointer++;
+                    }
+                    else return;
+                }
+                else if (Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer], tolerance)) {
+                    pWidthPointer++;
+                    sWidthPointer++;
+                }
+                else if ((sWidth - sWidthPointer) < scale) {
+                    if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)){
+                        pWidthPointer++;
+                        sWidthPointer++;
+                    }
+                    else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sWidth - sWidthPointer), tolerance)) {
+                        pWidthPointer++;
+                    }
+                    else return;
+                }
+                else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
+                    pWidthPointer++;
+                }
+                else if (Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer-scale], tolerance)) {
+                    sWidthPointer++;
+                }
+                else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
+                    pWidthPointer++;
+                    sWidthPointer++;
+                }
+                else return;
+            }
+            pWidthPointer = 0;
+            sWidthPointer = sBaseWidthPointer;
+            pHeightPointer++;
+            sHeightPointer++;
+        }
+    }
+/*
+    public static boolean compareSourceMaxed(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
+
+        for (int i = 0 ; i <= scale ; i++) {
+            if (Pixel.isSimilar(source[sh][sw - i],
+                                pattern[ph][pw],
+                                tolerance))
+                return true;
+        }
+        for (int j = 0 ; j < scale ; j++){
+            //compare between heights...
+        }
+        return false;
+    }
+*/
+/*
+    public static boolean compareSourceCloseToMaxed(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
+        int sourceWidth = source[0].length;
+        while (sw < sourceWidth)
+            for (int i = 0 ; i <= scale; i++) {
+                if (Pixel.isSimilar(source[sh][sw - i],
+                                    pattern[ph][pw],
+                                    tolerance))
+                    return true;
+            }
+            sw++;
+        }
+        return false;
+    }
+*/
+    public static boolean compareSourceUp(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
+        int topBoundsInit = scale;
+        int topBounds = topBoundsInit;
+        int bottomBounds = 0;
+        while (bottomBounds < topBoundsInit) {
+            if (Pixel.isSimilar(pattern[ph][pw], source[sh][sw+topBoundsInit], tolerance)) {
+                return true;
+            }
+            while (bottomBounds < topBounds) {
+                if (Pixel.getBetween(source[sh][sw+bottomBounds], source[sh][sw+topBounds], pattern[ph][pw], tolerance)) {
+                    return true;
+                }
+                bottomBounds++;
+            }
+            bottomBounds = 0;
+            topBoundsInit = topBoundsInit - 1;
+        }
+        return false;
+    }
+
+    public static boolean compareSourceDown(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
+        int topBoundsInit = scale;
+        int topBounds = topBoundsInit;
+        int bottomBounds = 0;
+        while (bottomBounds < topBoundsInit) {
+            if (Pixel.isSimilar(pattern[ph][pw], source[sh][sw-topBoundsInit], tolerance)) {
+                return true;
+            }
+            while (bottomBounds < topBounds) {
+                if (Pixel.getBetween(source[sh][sw-bottomBounds], source[sh][sw-topBounds], pattern[ph][pw], tolerance)) {
+                    return true;
+                }
+                bottomBounds++;
+            }
+            bottomBounds = 0;
+            topBoundsInit = topBoundsInit - 1;
+        }
+        return false;
+    }
 
     public static void compareScaleDown(Pixel[][] pattern, Pixel[][] source, int tolerance) {
         System.out.println();
