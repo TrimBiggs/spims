@@ -311,7 +311,7 @@ public class Spims {
         }
         return;
     }
-
+/*
     public static boolean compareUpHelper(Pixel[][] pattern, Pixel[][] source, int i, int j, int scale, int tolerance) {
         int patternLengthi = pattern.length;
         int patternLengthj = pattern[0].length;
@@ -407,7 +407,7 @@ public class Spims {
         }
         return true;
     }
-
+*/
     public static boolean compareScale(Pixel[][] pattern, Pixel[][] source, int sBaseHeightPointer, int sBaseWidthPointer, int tolerance) {
         int pHeight = pattern.length;
         int pWidth = pattern[0].length;
@@ -423,7 +423,6 @@ public class Spims {
         while (pHeightPointer < pHeight) {
             while (pWidthPointer < pWidth) {
                 if ((sWidth - sWidthPointer) == 1) {
-                //if ((sWidth - sWidthPointer) == 1) {
                     if (Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer], tolerance) ||
                         compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
                         pWidthPointer++;
