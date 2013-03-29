@@ -413,18 +413,22 @@ public class Spims {
         int pWidth = pattern[0].length;
         int sHeight = source.length;
         int sWidth = source[0].length;
-
         int pHeightPointer = 0;
         int pWidthPointer = 0;
         int sHeightPointer = sBaseHeightPointer;
         int sWidthPointer = sBaseWidthPointer;
         int scaleTemp = 4;
-        int scaleFound = scaleTemp;
+        if (pHeight < 4) {
+            scaleTemp = pHeight;
+        }
+        int scaleH = scaleTemp;
+        int scaleW = scaleTemp;
         while (pHeightPointer < pHeight) {
             while (pWidthPointer < pWidth) {
                 if ((sWidth - sWidthPointer) == 1) {
-                    if (Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer], tolerance) ||
-                        compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
+                    if (Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer], tolerance)){// ||
+                        //compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
+                        
                         pWidthPointer++;
                     }
                     else return false;
@@ -433,34 +437,127 @@ public class Spims {
                     pWidthPointer++;
                     sWidthPointer++;
                 }
-                else if ((sWidth - sWidthPointer) <= scaleFound) {
-                    if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)){
-                        pWidthPointer++;
-                        //sWidthPointer++;
+                else if ((sWidth - sWidthPointer) <= scaleW) {
+                    if ((sHeight - sHeightPointer) <= scaleH) {
+                        if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)){
+                            pWidthPointer++;
+                        }
+                        else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeight - sHeightPointer), (sWidth - sWidthPointer), tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
                     }
-                    else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sWidth - sWidthPointer), tolerance)) {
-                        //System.out.println("First source up");
+                    else if ((sHeightPointer - sBaseHeightPointer) <= scaleH) {
+                        if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, (sWidth - sWidthPointer), tolerance)){
+                            pWidthPointer++;
+                        }
+                        else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeightPointer - sBaseHeightPointer), scaleW, tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)){
+                            pWidthPointer++;
+                        }
+                        else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, (sWidth - sWidthPointer), tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+                else if ((sWidthPointer - sBaseWidthPointer) <= scaleW) {
+                    if ((sHeightPointer - sBaseHeightPointer) <= scaleH) {
+                        //if (pHeight - sHeight > (sHeightPointer - sBaseHeightPointer)){
+                        //    return false;
+                        //}
+                        //else {
+                            if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)){
+                                pWidthPointer++;
+                            }
+                            else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeightPointer - sBaseHeightPointer), (sWidthPointer - sBaseWidthPointer), tolerance)) {
+                                sWidthPointer++;
+                            }
+                            else {
+                                return false;
+                            }
+                        //}
+                    }
+                    else if ((sHeight - sHeightPointer) <= scaleH) {
+                        if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, (sWidthPointer - sBaseWidthPointer), tolerance)){
+                            pWidthPointer++;
+                        }
+                        else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeight - sHeightPointer), scaleW, tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
+                            pWidthPointer++;
+                        }
+                        else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, (sWidthPointer - sBaseWidthPointer), tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                } 
+                else if ((sHeightPointer - sBaseHeightPointer) <= scaleH) {
+                    if (pHeight - sHeight > (sHeightPointer - sBaseHeightPointer)){
+                            return false;
+                    }
+                    else {
+                        if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeightPointer - sBaseHeightPointer), scaleW, tolerance)) {
+                            sWidthPointer++;
+                        }
+                        else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
+                            pWidthPointer++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+                else if ((sHeight - sHeightPointer) <= scaleH) {
+                    if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, (sHeight - sHeightPointer), scaleW, tolerance)) {
+                        pWidthPointer++;
+                    }
+                    else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
                         sWidthPointer++;
                     }
                     else {
-                        //System.out.println("Mismatch at end");
                         return false;
                     }
                 }
-                else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
+                else if (compareSourceUp(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
                     //System.out.println("sWidth = "+sWidth);
                     //System.out.println("sWidthPointer = "+sWidthPointer);
                     sWidthPointer++;
                 }
-                else if (Pixel.isSimilar(source[sHeightPointer][sWidthPointer], pattern[pHeightPointer][pWidthPointer + 1], tolerance) ||
-                         Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer - scaleFound], tolerance)) {
+                else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleH, scaleW, tolerance)) {
                     pWidthPointer++;
                 }
-                else if (compareSourceDown(pattern, source, sHeightPointer, sWidthPointer, pHeightPointer, pWidthPointer, scaleFound, tolerance)) {
-                    pWidthPointer++;
+                else if (pWidthPointer + 1 != pWidth) {
+                    if (Pixel.isSimilar(source[sHeightPointer][sWidthPointer], pattern[pHeightPointer][pWidthPointer + 1], tolerance) ||
+                        Pixel.isSimilar(pattern[pHeightPointer][pWidthPointer], source[sHeightPointer][sWidthPointer - scaleW], tolerance)) {
+                        pWidthPointer++;
+                    }
+                    else {
+                        //System.out.println("Eventual Mismatch");
+                        return false;
+                    }
                 }
                 else {
-                    //System.out.println("Eventual Mismatch");
                     return false;
                 }
             }
@@ -499,40 +596,64 @@ public class Spims {
         return false;
     }
 */
-    public static boolean compareSourceUp(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
-        int topBoundsInit = scale - 1;
-        int topBounds = topBoundsInit;
-        //System.out.println(topBoundsInit);
-        int bottomBounds = 0;
-        while (bottomBounds < topBoundsInit) {
-            while (bottomBounds < topBounds) {
-                if (Pixel.getBetween(source[sh][sw+bottomBounds], source[sh][sw+topBounds], pattern[ph][pw], tolerance)) {
-                    return true;
+    public static boolean compareSourceUp(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scaleH, int scaleW, int tolerance) {
+        int topWidthInit = scaleW - 1;
+        int topHeightInit = scaleH - 1;
+        int topWidth = topWidthInit;
+        int topHeight = topHeightInit;
+        int bottomWidth = 0;
+        int bottomHeight = 0;
+
+        while (bottomHeight < topHeightInit) {
+            while (bottomHeight < topHeight) {
+                while (bottomWidth < topWidthInit) {
+                    if (Pixel.isSimilar(pattern[ph][pw], source[sh+topHeightInit][sw+topWidthInit], tolerance)) {
+                        return true;
+                    }
+                    while (bottomWidth < topWidth) {
+                        if (Pixel.getBetween(source[sh+bottomHeight][sw+bottomWidth], source[sh+topHeight][sw+topWidth], pattern[ph][pw], tolerance)) {
+                            return true;
+                        }
+                        bottomWidth++;
+                    }
+                    bottomWidth = 0;
+                    topWidthInit = topWidthInit - 1;
                 }
-                bottomBounds++;
+                bottomHeight++;
             }
-            bottomBounds = 0;
-            topBoundsInit = topBoundsInit - 1;
+            bottomHeight = 0;
+            topHeightInit = topHeightInit - 1;
         }
         return false;
     }
 
-    public static boolean compareSourceDown(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scale, int tolerance) {
-        int topBoundsInit = scale;
-        int topBounds = topBoundsInit;
-        int bottomBounds = 0;
-        while (bottomBounds < topBoundsInit) {
-            if (Pixel.isSimilar(pattern[ph][pw], source[sh][sw-topBoundsInit], tolerance)) {
-                return true;
-            }
-            while (bottomBounds < topBounds) {
-                if (Pixel.getBetween(source[sh][sw-bottomBounds], source[sh][sw-topBounds], pattern[ph][pw], tolerance)) {
-                    return true;
+    public static boolean compareSourceDown(Pixel[][] pattern, Pixel[][] source, int sh, int sw, int ph, int pw, int scaleH, int scaleW, int tolerance) {
+        int topWidthInit = scaleW - 1;
+        int topHeightInit = scaleH - 1;
+        int topWidth = topWidthInit;
+        int topHeight = topHeightInit;
+        int bottomWidth = 0;
+        int bottomHeight = 0;
+
+        while (bottomHeight < topHeightInit) {
+            while (bottomHeight < topHeight) {
+                while (bottomWidth < topWidthInit) {
+                    if (Pixel.isSimilar(pattern[ph][pw], source[sh-topHeightInit][sw-topWidthInit], tolerance)) {
+                        return true;
+                    }
+                    while (bottomWidth < topWidth) {
+                        if (Pixel.getBetween(source[sh-bottomHeight][sw-bottomWidth], source[sh-topHeight][sw-topWidth], pattern[ph][pw], tolerance)) {
+                            return true;
+                        }
+                        bottomWidth++;
+                    }
+                    bottomWidth = 0;
+                    topWidthInit = topWidthInit - 1;
                 }
-                bottomBounds++;
+                bottomHeight++;
             }
-            bottomBounds = 0;
-            topBoundsInit = topBoundsInit - 1;
+            bottomHeight = 0;
+            topHeightInit = topHeightInit - 1;
         }
         return false;
     }
