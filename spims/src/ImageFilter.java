@@ -7,7 +7,13 @@ import java.util.Iterator;
 /**
 * Class ImageFilter is FileFilter used to determine if input files
 * are of valid types.
+*
+*   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
+*   @version 0.4
+*   @Since 1/30/2012/
+*
 */
+
 public class ImageFilter implements FileFilter{
   private final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
 
