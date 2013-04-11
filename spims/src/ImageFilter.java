@@ -10,7 +10,7 @@ import java.util.Iterator;
 *
 *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
 *   @version 0.4
-*   @Since 1/30/2012/
+*   @since 1/30/2012/
 *
 */
 

@@ -6,7 +6,7 @@ import java.io.*;
 *
 *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
 *	@version 0.4
-*	@Since 1/30/2012/
+*	@since 1/30/2012/
 *
 */
 public class Pixel {
@@ -29,7 +29,7 @@ public class Pixel {
 	* 	@param red R value for the pixel
 	* 	@param green G value for the pixel
 	* 	@param blue B value for the pixel
-	*	@return Pixel. Return a Pixel object with the given RGB value 
+	*	@return Pixel. Return a Pixel object with the given RGB value
 	*/
 	public Pixel(int red, int green, int blue){
 		r = red;
@@ -41,8 +41,8 @@ public class Pixel {
 	/**
 	*	Compares two Pixels to see if they are similar enough to be considered the same.
 	*
-	* @param a. The first Pixel in the comparison
-	* @param b. The second Pixel in the comparison
+	* @param a The first Pixel in the comparison
+	* @param b The second Pixel in the comparison
 	* @param tolerance.	An int representing a discrepancy that can exists between two pixels
 	* 					and still be considered 'similar' enough to be a match of eachother. This is to account
 	* 					for differences between format types and transformations an image may have undergone.
@@ -57,10 +57,10 @@ public class Pixel {
 
 
 	/**
-	*	
-	* @param a.	The given Pixel object that we getting the quotient for
-	* @param scale. The integer values used to get the quotient.
-	* @return Pixel.	Function returns a pixel project by scaling down the RGB value 
+	*
+	* @param a	The given Pixel object that we getting the quotient for
+	* @param scale The integer values used to get the quotient.
+	* @return Pixel.	Function returns a pixel project by scaling down the RGB value
 	*					of the given pixel
 	*
 	*/
@@ -70,7 +70,7 @@ public class Pixel {
 
 
 	/**
-	* 
+	*
 	* @param a1	First given Pixel object, which is used as the lower bound.
 	* @param a2	Second given Pixel object, which is used as the upper bound.
 	* @param b 	Given Pixel object. This is the one we are trying to see if it's between

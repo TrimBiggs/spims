@@ -3,14 +3,11 @@ import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
-*
-*   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
-*   @version 0.4
-*   @Since 1/30/2012/
-*
-*/
 
+/**
+*   Class MatchData is used solely by the Outputter class to hold specific
+*   details about a subimage match including names, dimnesions, size, and locations.
+*/
 class MatchData{
     public String pattern;
     public String source;
@@ -22,6 +19,17 @@ class MatchData{
     public int x2;
     public int y2;
 
+    /**
+    *   Constructor for class MatchData. Creates a new MatchData
+    *   object with appropriate parameters
+    *
+    *   @param _pat The name of the pattern image
+    *   @param _src The name of the source image
+    *   @param _w The width of the match
+    *   @param _h The height of the match
+    *   @param _x The x location of the upper left pixel in the source image where the match occurs
+    *   @param _y The y location of the upper left pixel in the source image where the match occurs
+    */
     public MatchData(String _pat, String _src, int _w, int _h, int _x, int _y){
         pattern = _pat;
         source = _src;
@@ -35,47 +43,63 @@ class MatchData{
         y2 = y + height;
     }
 
+    /**
+    *   Returns a string representation of the MatchData object
+    *   and the information it contains.
+    *
+    *   @return A string telling the user what the object represents.
+    */
     public String toString(){
         return new String("" + pattern + " matches " + source +
                       " at " + width + "x" + height + "+" + x + "+" + y);
     }
 }
 
+/**
+*   Public class Outtputer holds MatchData objects representing each
+*   match found by the program. It also outputs all the information
+*   contained in the MatchData objects when requested to do so.
+*/
 public class Outputter{
     private ArrayList<MatchData> myMatches;
 
+    /**
+    *   Constructor for class Outputter. Takes no arguments, but
+    *   initializes an empty ArrayList of type MatchData.
+    */
     public Outputter(){
         myMatches = new ArrayList<MatchData>();
     }
 
-/**
-* This function adds needed return information for the new match onto the output object
-* @param _pat The patten image name
-* @param _src The source image name
-* @param _w   The width in pixels of the matched area
-* @param _h   The height in pixels of the matched area
-* @param _x   The x-axis value of where the images match
-* @param _y   The y-axis value of where the images match
-* @return Null. Function returns nothing, it just add the new matching to outputter object
-*/    
+    /**
+    *   Adds a new MatchData object to the class's collection of MatchData.
+    *
+    *   @param _pat The name of the pattern image
+    *   @param _src The name of the source image
+    *   @param _w The width of the match
+    *   @param _h The height of the match
+    *   @param _x The x location of the upper left pixel in the source image where the match occurs
+    *   @param _y The y location of the upper left pixel in the source image where the match occurs
+    */
     public void add(String _pat, String _src, int _w, int _h, int _x, int _y){
         myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y));
         //System.out.println("adding");
     }
 
-/**
-* This funciton checks the total number of atches we have in the output object
-* @return integer Returns the number of matches in the result outputter object
-*/
+    /**
+    *   Computes the size of the Outputters ArrayList of MatchData
+    *
+    *   @return The number of MatchData objects held by this Outputter object
+    */
     public int size() {
         return myMatches.size();
     }
 
- 
-/**
-* This function removes duplicated matches from the outputter object
-* @return Null
-*/    
+    //THIS FUNCTION ASSUMES BOTH FOUND PATTERNS ARE THE SAME SIZE. UPDATE LATER
+    //FENCEPOSTING on width and height?
+    /**
+    *   Remove duplicate matches that overlap eachother by 50%.
+    */
     public void filter(){
         //compare each match to every match that comes after it
         ArrayList badIndexes = new ArrayList();
@@ -129,11 +153,9 @@ public class Outputter{
         }*/
     }
 
-/**
-* This function goes through each match in the outputter object. It outputs each match
-* to a new line.w
-* @return Null
-*/
+    /**
+    *   Print information held by each MatchData object collected by this Outputter to the console.
+    */
     public void output(){
         //boolean firstline = true;
         filter();

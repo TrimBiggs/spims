@@ -11,7 +11,7 @@ import java.awt.image.DataBufferInt;
 *
 *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
 *   @version 0.4
-*   @Since 1/30/2012/
+*   @since 1/30/2012/
 *
 */
 
@@ -256,7 +256,7 @@ public class Spims {
     * @param j
     * @param tolerance and int representing how forgiving the algorithm will be when searching for equal pixels
     *
-    * @return an array of ints showing the starting corner of the match
+    * @return boolean. Whether or not the two array's (and therefore images) are identical
     */
     public static boolean justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
