@@ -1,8 +1,7 @@
 import java.io.*; //??? not sure
-import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-
+import java.util.ArrayList;
 /**
 *   Spims is the main class of the image matching software.
 *   It accepts input, validates it, handles sending the input files
@@ -27,73 +26,17 @@ public class Spims {
     public static void main(String[] args) {
         String patternFile = "";
         String sourceFile = "";
-        File pattern;
-        File source;
         int tolerance = 30;
         int gifTolerance = 45;
         int[] result;
 
-        //Less than apprpriate number of arguments given
-        if (args.length < 4) {
-            System.err.print("Error: Expected at least 4 inputs.\n"+
-                "Got " + args.length + ": ");
-                for (int i = 0; i < args.length; i++) {
-                    System.err.print("" + args[i] + " ");
-                }
-            System.out.println();
-            return;
-        }
+        //take main method inputs and ensure they are correct and valid
+        Inputter inputs = new Inputter(args);
+        inputs.processInputs();
 
-        boolean badInput = false;
-        if (!args[0].equals("-p") && !args[0].equals("-pdir")) {
-            System.err.println("Invalid flag provided: " + args[0]);
-            return;
-        }
-        if(!args[2].equals("-s") && !args[2].equals("-sdir")) {
-            System.err.println("Invalid flag provided: " + args[2]);
-            return;
-        }
+        ArrayList<BufferedImage> patterns = inputs.getPatterns();
+        ArrayList<BufferedImage> sources = inputs.getSources();
 
-        //Do a search on the '-p' and '-s' flags
-        if (args.length == 4) {
-        //args[0] should be -p
-            pattern = new File(args[1]);
-        //args[2] should be -s
-            source = new File(args[3]);
-        }
-      else{
-        System.err.println("Too many arguments. Expected 4 got " + args.length);
-        return;
-        //stupid hack to make java convinced the vars are initialized
-      }
-
-      File[] patterns;
-      File[] sources;
-      ImageFilter filter = new ImageFilter();
-
-      if (args[0].equals("-pdir") && pattern.isDirectory()){
-        patterns = pattern.listFiles(filter);
-      } else if(args[0].equals("-p") && !pattern.isDirectory()){
-        patterns = new File[]{pattern};
-      } else {
-        System.err.println("Pattern input does not match flag. Program terminating.");
-        return;
-      }
-      if (args[2].equals("-sdir") && source.isDirectory()){ sources = source.listFiles(filter); }
-      else if(args[2].equals("-s") && !source.isDirectory()){ sources = new File[]{source}; }
-      else{
-        System.err.println("Source input does not match flag. Program terminating.");
-        return;
-      }
-
-      if(patterns.length == 0 || !filter.accept(patterns[0])){
-        System.err.println("Error: Expected pattern input(s) with extension .png, .jpg, or .gif.");
-        return;
-      }
-      if(sources.length == 0 || !filter.accept(sources[0])){
-        System.err.println("Error: Expected source input(s) with extension .png, .jpg, or .gif.");
-        return;
-      }
 
         BufferedImage patternImg = null;
         BufferedImage sourceImg = null;
@@ -101,13 +44,11 @@ public class Spims {
         File curSource;
         int outputSizeBefore;
 
-      for(int x = 0; x < patterns.length; x++){
-        curPattern = patterns[x];
-        for(int y = 0; y < sources.length; y++){
-            curSource = sources[y];
+      for(int x = 0; x < patterns.size(); x++){
+        for(int y = 0; y < sources.size(); y++){
             try{
-                patternImg = ImageIO.read(curPattern);
-                sourceImg = ImageIO.read(curSource);
+                patternImg = patterns.get(x);
+                sourceImg = sources.get(y);
                 int[][] patternInts = new int[patternImg.getHeight()][patternImg.getWidth()];
                 int[][] sourceInts = new int[sourceImg.getHeight()][sourceImg.getWidth()];
 

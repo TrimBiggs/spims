@@ -1,6 +1,7 @@
 import java.io.FileFilter;
 import java.io.File;
-import javax.imageio.*;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.util.Iterator;
 
@@ -15,7 +16,7 @@ import java.util.Iterator;
 */
 
 public class ImageFilter implements FileFilter{
-  private final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
+  private final String[] IMAGE_TYPES = new String[]{"png", "gif", "jpeg"};
 
   /**
   * Contrusctor for class ImageFilter.
