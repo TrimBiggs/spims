@@ -26,7 +26,7 @@ public class Spims {
      * and indicitive flags telling whether inputs are directories or files
      */
     public static void main(String[] args) {
-        int smallTolerance = 15;
+        int smallPatternTolerance = 15;
         int tolerance = 30;
         int gifTolerance = 45;
         int[] result;
@@ -96,7 +96,7 @@ public class Spims {
                     int givenTolerance = tolerance;
 
                     if ((patternWidth * patternHeight) < 10)
-                        givenTolerance = smallTolerance;
+                        givenTolerance = smallPatternTolerance;
                     //check for gifs
                     else if (curPattern.endsWith("gif") || curSource.endsWith("gif"))
                         givenTolerance = gifTolerance;
