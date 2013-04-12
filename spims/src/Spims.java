@@ -86,7 +86,7 @@ public class Spims {
                         }
                     }
 
-                    PatternImage patternObject = new PatternImage(patternPixels);
+                    PatternObject patternObject = new PatternObject(patternPixels);
 
                     int patternWidth = patternImg.getWidth();
                     int patternHeight = patternImg.getHeight();
@@ -163,7 +163,7 @@ public class Spims {
     */
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static void compareNoScale(PatternImage pattern, Pixel[][] source, int tolerance,
+    public static void compareNoScale(PatternObject pattern, Pixel[][] source, int tolerance,
                                        String pname, String sname, int pwidth, int pheight) {
         //setup return string
         String strResult = "false";
@@ -202,7 +202,7 @@ public class Spims {
     *
     * @return boolean. Whether or not the two array's (and therefore images) are identical
     */
-    public static boolean justCompare(PatternImage pattern, Pixel[][] source, int i, int j, int tolerance) {
+    public static boolean justCompare(PatternObject pattern, Pixel[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
         int[] result;
         for (int ii = 0; ii < pattern.pixels.length; ii++){

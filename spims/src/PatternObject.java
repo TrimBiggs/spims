@@ -9,15 +9,15 @@ import java.io.*;
 *	@since 1/30/2012/
 *
 */
-public class PatternImage {
+public class PatternObject {
 
 	/**
-	*	Constructor for class PatternImage.
+	*	Constructor for class PatternObject.
 	*
 	*	@param _image The array of Pixel RGB values that make up the image
-	* 	@return PatternImage. Return the newly created PatternImage object
+	* 	@return PatternObject. Return the newly created PatternObject object
 	*/
-	public PatternImage(Pixel[][] _pixels){
+	public PatternObject(Pixel[][] _pixels){
 		pixels = _pixels;
 		offset = 0;
 	}
