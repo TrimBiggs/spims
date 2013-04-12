@@ -17,8 +17,11 @@ public class PatternImage {
 	*	@param _image The array of Pixel RGB values that make up the image
 	* 	@return PatternImage. Return the newly created PatternImage object
 	*/
-	public PatternImage(Array[][] _pixels){
+	public PatternImage(Pixel[][] _pixels){
 		pixels = _pixels;
 		offset = 0;
 	}
+
+	public Pixel[][] pixels;
+	public int offset;
 }

@@ -1,4 +1,4 @@
-import java.io.*; //??? not sure
+import java.io.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class Spims {
                         }
                     }
 
-                    patternObject = new PatternImage(patternPixels);
+                    PatternImage patternObject = new PatternImage(patternPixels);
 
                     int patternWidth = patternImg.getWidth();
                     int patternHeight = patternImg.getHeight();
@@ -109,7 +109,7 @@ public class Spims {
                         }
                     } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
                         compareNoScale(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
-                    } else
+                    } //else
                     //compareScaleUp(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
                 }
                 catch (Exception e){

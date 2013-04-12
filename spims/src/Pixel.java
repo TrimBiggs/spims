@@ -53,7 +53,7 @@ public class Pixel {
 		int rDiff = Math.abs(a.r - b.r);
 		int gDiff = Math.abs(a.g - b.g);
 		int bDiff = Math.abs(a.b - b.b);
-		if ((rdiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
+		if ((rDiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
 			return (rDiff + gDiff + bDiff);
 		else
 			return -1;
