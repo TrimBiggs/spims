@@ -1,8 +1,8 @@
 import java.util.HashSet;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -19,10 +19,10 @@ public class Inputter{
     private String p_loc;
     private String s_loc;
 
-    private ArrayList<BufferedImage> patternImages =
-        new ArrayList<BufferedImage>();
-    private ArrayList<BufferedImage> sourceImages =
-        new ArrayList<BufferedImage>();
+    private HashMap<String, BufferedImage> patternImages =
+        new HashMap<String, BufferedImage>();
+    private HashMap<String, BufferedImage> sourceImages =
+        new HashMap<String, BufferedImage>();
 
     private final HashSet<String> VALID_P_FLAGS = new HashSet<String>(
         Arrays.asList(new String[] {"-p", "-pdir", "--pdir"})
@@ -47,6 +47,11 @@ public class Inputter{
         s_loc = args[3];
     }
 
+    /**
+    *   Validate flags are correct.
+    *   Validate file types are correct.
+    *   Populate collections of data.
+    */
     public void processInputs(){
         validatePatternFlag();
         validateSourceFlags();
@@ -58,16 +63,16 @@ public class Inputter{
     }
 
     /**
-    *   @return The list of BufferedImages to be used as patterns
+    *   @return The map of BufferedImages to be used as patterns
     */
-    public ArrayList<BufferedImage> getPatterns(){
+    public HashMap<String, BufferedImage> getPatterns(){
         return patternImages;
     }
 
     /**
-    *   @return The list of BufferedImages to be used as sources
+    *   @return The map of BufferedImages to be used as sources
     */
-    public ArrayList<BufferedImage> getSources(){
+    public HashMap<String, BufferedImage> getSources(){
         return sourceImages;
     }
 
@@ -97,11 +102,11 @@ public class Inputter{
         if(!p_flag.equals("-p") && pattern.isDirectory()){
             patterns = pattern.listFiles(FILTER);
             for(File f : patterns){
-                patternImages.add(ImageIO.read(f));
+                addToPatterns(f);
             }
-        } else if(!pattern.isDirectory() && pattern.canExecute()){
+        } else if(!pattern.isDirectory()){
             if(FILTER.accept(pattern)){
-                patternImages.add(ImageIO.read(pattern));
+                addToPatterns(pattern);
             } else {
                 handleInvalidFiles("pattern");
             }
@@ -111,6 +116,42 @@ public class Inputter{
             );
             System.exit(1);
         }
+    }
+
+    /**
+    *   Helper method for adding images to the pattern collection
+    */
+    private void addToPatterns(File f){
+        String name = f.getName();
+        BufferedImage b;
+
+        try{
+            b = ImageIO.read(f);
+        }catch(Exception e){
+            System.err.println("There was an error reading your image.");
+            System.exit(1);
+            return; //tricking java. program will terminate before it gets here
+        }
+
+        patternImages.put( name.substring(name.lastIndexOf("/") + 1), b);
+    }
+
+    /**
+    *   Helper method for adding images to the source collection
+    */
+    private void addToSources(File f){
+        String name = f.getName();
+        BufferedImage b;
+
+        try{
+            b = ImageIO.read(f);
+        }catch(Exception e){
+            System.err.println("There was an error reading your image.");
+            System.exit(1);
+            return; //tricking java. program will terminate before it gets here
+        }
+
+        sourceImages.put( name.substring(name.lastIndexOf("/") + 1), b);
     }
 
     /**
@@ -124,11 +165,11 @@ public class Inputter{
         if(!s_flag.equals("-s") && source.isDirectory()){
             sources = source.listFiles(FILTER);
             for(File f : sources){
-                sourceImages.add(ImageIO.read(f));
+                addToSources(f);
             }
-        } else if(!source.isDirectory() && source.canExecute()){
+        } else if(!source.isDirectory()){
             if(FILTER.accept(source)){
-                sourceImages.add(ImageIO.read(source));
+                addToSources(source);
             } else {
                 handleInvalidFiles("source");
             }
