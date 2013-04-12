@@ -49,10 +49,14 @@ public class Pixel {
 	* @return boolean. 	Function returns true is the two Pixel objects have differences less
 	*					then the tolerance number. Returns false otherwise.
 	*/
-	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
-		return (Math.abs(a.r - b.r) <= tolerance) &&
-		(Math.abs(a.g - b.g) <= tolerance) &&
-		(Math.abs(a.b - b.b) <= tolerance);
+	public static int isSimilar(Pixel a, Pixel b, int tolerance){
+		int rDiff = Math.abs(a.r - b.r);
+		int gDiff = Math.abs(a.g - b.g);
+		int bDiff = Math.abs(a.b - b.b);
+		if ((rdiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
+			return (rDiff + gDiff + bDiff);
+		else
+			return -1;
 	}
 
 
