@@ -25,7 +25,7 @@ public class Spims {
      * @param args Arguments sent to the main method, files or directories to use,
      * and indicitive flags telling whether inputs are directories or files
      */
-    public static void main(String[] args) {
+    public static void main(String[] args){
         int tolerance = 30;
         int gifTolerance = 45;
 
@@ -35,30 +35,24 @@ public class Spims {
 
         HashMap<String, BufferedImage> patterns = inputs.getPatterns();
         HashMap<String, BufferedImage> sources = inputs.getSources();
-        HashMap<String, Pixel[][]> patternPixelsMap = inputs.getPatternPixels();
-        HashMap<String, Pixel[][]> sourcePixelsMap = inputs.getSourcePixels();
 
-        BufferedImage patternImg = null;
-        BufferedImage sourceImg = null;
-        String curPattern;
-        String curSource;
         int outputSizeBefore;
 
         Iterator<String> patternKeys = patterns.keySet().iterator();
-        Iterator<String> sourceKeys;
 
         while(patternKeys.hasNext()){
-            curPattern = patternKeys.next();
-            sourceKeys = sources.keySet().iterator();
+            String curPattern = patternKeys.next();
+            Iterator<String> sourceKeys = sources.keySet().iterator();
+
+            BufferedImage patternImg = patterns.get(curPattern);
+            int[][] patternPixels = inputs.generatePixels(patternImg);
 
             while(sourceKeys.hasNext()){
-                curSource = sourceKeys.next();
+                String curSource = sourceKeys.next();
 
-                patternImg = patterns.get(curPattern);
-                sourceImg = sources.get(curSource);
+                BufferedImage sourceImg = sources.get(curSource);
 
-                Pixel[][] patternPixels = patternPixelsMap.get(curPattern);
-                Pixel[][] sourcePixels = sourcePixelsMap.get(curSource);
+                int[][] sourcePixels = inputs.generatePixels(sourceImg);
 
                 int patternWidth = patternImg.getWidth();
                 int patternHeight = patternImg.getHeight();
@@ -110,7 +104,7 @@ public class Spims {
     *
     * @return void; class's output object will be updated if there is a match
     */
-    public static void compareExact(Pixel[][] pattern, Pixel[][] source, String pname, String sname, int pwidth, int pheight) {
+    public static void compareExact(int[][] pattern, int[][] source, String pname, String sname, int pwidth, int pheight) {
         for (int i = 0; i < pattern.length; i++){
             for (int j = 0; j < pattern[i].length; j++){
                 if (!Pixel.isSimilar(pattern[i][j], source[i][j], 0)){
@@ -138,7 +132,7 @@ public class Spims {
     */
     //TODO Implement
     //Method to check if patternis a cropped version of source
-    public static void compareNoScale(Pixel[][] pattern, Pixel[][] source, int tolerance,
+    public static void compareNoScale(int[][] pattern, int[][] source, int tolerance,
                                        String pname, String sname, int pwidth, int pheight) {
         //setup return string
         String strResult = "false";
@@ -177,7 +171,7 @@ public class Spims {
     *
     * @return boolean. Whether or not the two array's (and therefore images) are identical
     */
-    public static boolean justCompare(Pixel[][] pattern, Pixel[][] source, int i, int j, int tolerance) {
+    public static boolean justCompare(int[][] pattern, int[][] source, int i, int j, int tolerance) {
         //go through each row and column of the pattern image
         int[] result;
         for (int ii = 0; ii < pattern.length; ii++){

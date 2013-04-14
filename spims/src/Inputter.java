@@ -23,10 +23,6 @@ public class Inputter{
         new HashMap<String, BufferedImage>();
     private HashMap<String, BufferedImage> sourceImages =
         new HashMap<String, BufferedImage>();
-    private HashMap<String, Pixel[][]> patternPixels =
-        new HashMap<String, Pixel[][]>();
-    private HashMap<String, Pixel[][]> sourcePixels =
-        new HashMap<String, Pixel[][]>();
 
     private final HashSet<String> VALID_P_FLAGS = new HashSet<String>(
         Arrays.asList(new String[] {"-p", "-pdir", "--pdir"})
@@ -81,23 +77,21 @@ public class Inputter{
     }
 
     /**
-    *   Generate a HashMap of Arrays of Arrays holding pixels for the pattern
-    *   images.
+    *   Generates an Pixel Array of Arrays from a BufferedImage
     *
-    *   @return A map of Pixel[][] for the patterns
+    *   @param b a BufferedImage
+    *   @return a Pixel[][] representing b
     */
-    public HashMap<String, Pixel[][]> getPatternPixels(){
-        return patternPixels;
-    }
+    public int[][] generatePixels(BufferedImage b){
+        int[][] pixels = new int[b.getHeight()][b.getWidth()];
 
-    /**
-    *   Generate a HashMap of Arrays of Arrays holding pixels for the source
-    *   images.
-    *
-    *   @return A map of Pixel[][] for the sources
-    */
-    public HashMap<String, Pixel[][]> getSourcePixels(){
-        return sourcePixels;
+        for(int i = 0; i < pixels.length; i++) {
+            for(int j = 0; j < pixels[i].length; j++) {
+                pixels[i][j] = b.getRGB(j,i);
+            }
+        }
+
+        return pixels;
     }
 
     //Private Methods
@@ -143,24 +137,6 @@ public class Inputter{
     }
 
     /**
-    *   Generates an Pixel Array of Arrays from a BufferedImage
-    *
-    *   @param b a BufferedImage
-    *   @return a Pixel[][] representing b
-    */
-    private Pixel[][] generatePixels(BufferedImage b){
-        Pixel[][] pixels = new Pixel[b.getHeight()][b.getWidth()];
-
-        for(int i = 0; i < pixels.length; i++) {
-            for(int j = 0; j < pixels[i].length; j++) {
-                pixels[i][j] = new Pixel(b.getRGB(j,i));
-            }
-        }
-
-        return pixels;
-    }
-
-    /**
     *   Helper method for adding images to the pattern collection
     */
     private void addToPatterns(File f){
@@ -177,7 +153,6 @@ public class Inputter{
         }
 
         patternImages.put(fname, b);
-        patternPixels.put(fname, generatePixels(b));
     }
 
     /**
@@ -197,7 +172,6 @@ public class Inputter{
         }
 
         sourceImages.put(fname, b);
-        sourcePixels.put(fname, generatePixels(b));
     }
 
     /**

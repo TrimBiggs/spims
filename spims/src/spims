@@ -1,3 +1,3 @@
 #! /bin/bash
 
-java -Xmx3000m Spims $1 $2 $3 $4
+java -Xmx1024m Spims $1 $2 $3 $4
