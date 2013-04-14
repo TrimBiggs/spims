@@ -22,10 +22,10 @@ public class PatternObject {
 		offset = 0;
 	}
 
-	public Pixel[][] pixels;
+	public int[][] pixels;
 	public int offset;
 
-	public static boolean isSimilar(int x, int y, int tolerance){
+	public static int isSimilar(int x, int y, int tolerance){
 		int bx = x & 0x0000FF;
 		int gx = (x & 0x00FF00) >> 8;
 		int rx = (x & 0xFF0000) >> 16;
@@ -34,13 +34,13 @@ public class PatternObject {
 		int gy = (y & 0x00FF00) >> 8;
 		int ry = (y & 0xFF0000) >> 16;
 
-		return (Math.abs(rx - ry) <= tolerance) &&
-		(Math.abs(gx - gy) <= tolerance) &&
-		(Math.abs(bx - by) <= tolerance);
+		int rDiff = Math.abs(rx - ry);
+		int gDiff = Math.abs(gx - gy);
+		int bDiff = Math.abs(bx - by);
 
-		/*if ((rDiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
+		if ((rDiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
 			return (rDiff + gDiff + bDiff);
 		else
-		return -1;*/
+			return -1;
 	}
 }
