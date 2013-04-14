@@ -76,6 +76,24 @@ public class Inputter{
         return sourceImages;
     }
 
+    /**
+    *   Generates an Pixel Array of Arrays from a BufferedImage
+    *
+    *   @param b a BufferedImage
+    *   @return a Pixel[][] representing b
+    */
+    public int[][] generatePixels(BufferedImage b){
+        int[][] pixels = new int[b.getHeight()][b.getWidth()];
+
+        for(int i = 0; i < pixels.length; i++) {
+            for(int j = 0; j < pixels[i].length; j++) {
+                pixels[i][j] = b.getRGB(j,i);
+            }
+        }
+
+        return pixels;
+    }
+
     //Private Methods
 
     /**
@@ -123,6 +141,7 @@ public class Inputter{
     */
     private void addToPatterns(File f){
         String name = f.getName();
+        String fname = name.substring(name.lastIndexOf("/") + 1);
         BufferedImage b;
 
         try{
@@ -133,7 +152,7 @@ public class Inputter{
             return; //tricking java. program will terminate before it gets here
         }
 
-        patternImages.put( name.substring(name.lastIndexOf("/") + 1), b);
+        patternImages.put(fname, b);
     }
 
     /**
@@ -141,6 +160,7 @@ public class Inputter{
     */
     private void addToSources(File f){
         String name = f.getName();
+        String fname = name.substring(name.lastIndexOf("/") + 1);
         BufferedImage b;
 
         try{
@@ -151,7 +171,7 @@ public class Inputter{
             return; //tricking java. program will terminate before it gets here
         }
 
-        sourceImages.put( name.substring(name.lastIndexOf("/") + 1), b);
+        sourceImages.put(fname, b);
     }
 
     /**

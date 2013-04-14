@@ -49,10 +49,18 @@ public class Pixel {
 	* @return boolean. 	Function returns true is the two Pixel objects have differences less
 	*					then the tolerance number. Returns false otherwise.
 	*/
-	public static boolean isSimilar(Pixel a, Pixel b, int tolerance){
-		return (Math.abs(a.r - b.r) <= tolerance) &&
-		(Math.abs(a.g - b.g) <= tolerance) &&
-		(Math.abs(a.b - b.b) <= tolerance);
+	public static boolean isSimilar(int x, int y, int tolerance){
+		int bx = x & 0x0000FF;
+		int gx = (x & 0x00FF00) >> 8;
+		int rx = (x & 0xFF0000) >> 16;
+
+		int by = y & 0x0000FF;
+		int gy = (y & 0x00FF00) >> 8;
+		int ry = (y & 0xFF0000) >> 16;
+
+		return (Math.abs(rx - ry) <= tolerance) &&
+		(Math.abs(gx - gy) <= tolerance) &&
+		(Math.abs(bx - by) <= tolerance);
 	}
 
 
@@ -64,9 +72,9 @@ public class Pixel {
 	*					of the given pixel
 	*
 	*/
-	public static Pixel getQuotient(Pixel a, int scale) {
-		return new Pixel(a.r / scale, a.g / scale, a.b / scale);
-	}
+	// public static Pixel getQuotient(Pixel a, int scale) {
+	// 	return new Pixel(a.r / scale, a.g / scale, a.b / scale);
+	// }
 
 
 	/**
@@ -81,14 +89,14 @@ public class Pixel {
 	*					The differences between the pixels are less than the tolerance.
 	*					Return false otherwise.
 	*/
-	public static boolean getBetween(Pixel a1, Pixel a2, Pixel b, int tolerance) {
-		return (((a1.r <= b.r && b.r <= a2.r) || (a1.r >= b.r && b.r >= a2.r)) ||
-				((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
-			   (((a1.g <= b.g && b.g <= a2.g) || (a1.g >= b.g && b.g >= a2.g)) ||
-			    ((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
-			   (((a1.b <= b.b && b.b <= a2.b) || (a1.b >= b.b && b.b >= a2.b)) ||
-			   	((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance)));
-	}
+	// public static boolean getBetween(Pixel a1, Pixel a2, Pixel b, int tolerance) {
+	// 	return (((a1.r <= b.r && b.r <= a2.r) || (a1.r >= b.r && b.r >= a2.r)) ||
+	// 			((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
+	// 		   (((a1.g <= b.g && b.g <= a2.g) || (a1.g >= b.g && b.g >= a2.g)) ||
+	// 		    ((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance))) &&
+	// 		   (((a1.b <= b.b && b.b <= a2.b) || (a1.b >= b.b && b.b >= a2.b)) ||
+	// 		   	((Math.abs(a1.r - b.r) <= tolerance) || (Math.abs(a2.r - b.r) <= tolerance)));
+	// }
 
 	public int r;
 	public int g;
