@@ -70,7 +70,6 @@ public class Spims {
                 else if (curPattern.endsWith("gif") || curSource.endsWith("gif"))
                     givenTolerance = gifTolerance;
                 if (patternWidth == sourceImg.getWidth() && patternHeight == sourceImg.getHeight()) {
-                    //Check if any results, if not call compareScaleUp()
                     compareExact(sourcePixels, patternPixels, curPattern, curSource, patternWidth, patternHeight);
 
                     //TODO: Remove this section
@@ -83,7 +82,7 @@ public class Spims {
                         }
                     }*/
 
-                } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
+                } else if (patternImg.getWidth() <= sourceImg.getWidth() && patternImg.getHeight() <= sourceImg.getHeight()){
                     compareNoScale(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
                 }
             }
