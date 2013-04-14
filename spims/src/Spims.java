@@ -83,7 +83,7 @@ public class Spims {
 
                 } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
                     compareNoScale(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
-                } 
+                }
             }
         }
         output.output();
@@ -184,3 +184,4 @@ public class Spims {
         }
         return true;
     }
+}
