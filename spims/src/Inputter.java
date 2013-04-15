@@ -175,7 +175,7 @@ public class Inputter{
     }
 
     /**
-    *   Validates source input and processes it. The class's soruceImages
+    *   Validates source input and processes it. The class's sourceImages
     *   list will be populated during this process.
     */
     private void gatherSources(){

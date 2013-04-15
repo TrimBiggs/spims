@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Arrays;
 
 /**
 * Class ImageFilter is FileFilter used to determine if input files
@@ -16,7 +18,9 @@ import java.util.Iterator;
 */
 
 public class ImageFilter implements FileFilter{
-  private final String[] IMAGE_TYPES = new String[]{"png", "gif", "jpeg"};
+  private final HashSet<String> IMAGE_TYPES = new HashSet<String>(
+    Arrays.asList(new String[] {"png", "gif", "jpeg"})
+  );
 
   /**
   * Contrusctor for class ImageFilter.
@@ -31,6 +35,20 @@ public class ImageFilter implements FileFilter{
   * @return true or false, whether or not the File is of type jpeg, png, or gif.
   */
   public boolean accept(File f){
+    //ensure that the file exists in the system
+    if(!f.exists()){
+      System.err.println("Given input " + f.getName() + " does not exist. Program will terminate.");
+      System.exit(1);
+      return false;
+    }
+
+    //ensure the file is not a subdirectory
+    if(f.isDirectory()){
+      System.err.println("Given input contained a subdirectory. Program will terminate.");
+      System.exit(1);
+      return false;
+    }
+
     //ignore hidden files that might be automatically generated
     if(f.getName().toLowerCase().startsWith(".") ||
        f.getName().endsWith("~")){ return false; }
@@ -46,10 +64,8 @@ public class ImageFilter implements FileFilter{
           //Get the format of ImageInputStream
           String ext = irs.next().getFormatName();
 
-          //Check if format type is in the given array.
-          for(int i = 0; i < IMAGE_TYPES.length; i++){
-            if(ext.toLowerCase().equals(IMAGE_TYPES[i])) { return true; }
-          }
+          //Check if format type is in the given collection.
+          if(IMAGE_TYPES.contains(ext.toLowerCase()) ) { return true; }
         }catch(Exception e){ System.err.println("There was an error retrieving the format of the file. Program will terminate."); }
       }
     }catch (Exception e){
