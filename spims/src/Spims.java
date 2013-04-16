@@ -1,4 +1,3 @@
-import java.io.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;

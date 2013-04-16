@@ -1,5 +1,3 @@
-import java.io.*;
-
 /**
 *    Class PatternObject holds the int array of arrays that represent
 *    a pattern image, as well as the offset between the pattern and source.
