@@ -27,8 +27,6 @@ public class Spims {
    * and indicitive flags telling whether inputs are directories or files
    */
   public static void main(String[] args) {
-    //TODO: REMOVE THIS
-    long startTime = System.currentTimeMillis();
 
     int smallPatternTolerance = 15;
     int majorTolerance = 60;
@@ -81,9 +79,6 @@ public class Spims {
       }
     }
     output.output();
-      //TODO: REMOVE THIS
-    long endTime = System.currentTimeMillis();
-    System.out.println("Elapsed Time: " + ((endTime - startTime) / 60000) + "' " + ((endTime - startTime) / 1000) + "\"");
   }
 
 
@@ -96,43 +91,42 @@ public class Spims {
    * @param source an Array of RGB int values representing each pixel in the source image
    * @param pname the name of the pattern image
    * @param sname the name of the source image
-   * @param pwidth width of the pattern image for output purposes
-   * @param pheight height of the pattern image for output purposes
+   * @param patternWidth width of the pattern image for output purposes
+   * @param patternHeight height of the pattern image for output purposes
    *
    * @return void; class's output object will be updated if there is a match
    */
   public static void compareExact(int[][] pattern, int[][] source, String pname, 
-                                  String sname, int pwidth, int pheight) {
-    for (int y = 0; y < pattern.length; y++) {
-      for (int x = 0; x < pattern[y].length; x++) {
+                                  String sname, int patternWidth, int patternHeight) {
+    for (int y = 0; y < patternHeight; y++) {
+      for (int x = 0; x < patternWidth; x++) {
         if (!PatternObject.isExactlySimilar(pattern[y][x], source[y][x])) {
           return;
         }
       }
     }
-    output.add(pname, sname, pwidth, pheight, 0, 0);
+    output.add(pname, sname, patternWidth, patternHeight, 0, 0);
   }
 
   /**
-   * This function calls the helper function just compare, which compares two Pixel
-   * array of arrays and checks against the tolerance value. This function checks if
-   * the pattern image matches exactly (without scaling) to any sub sections
-   * of the source image
+   * This compareCropped function iterates through the source image and determines if the 
+   * RGB int values of the corners of the pattern image match the corresponding RGB int values
+   * of the source image.  The function then calls comparedCroppedHelper function, which 
+   * compares the two RGB int array of arrays and checks against the tolerance value. 
    *
    * @param patternObj a PatternObject containing the array of ints representing each pixel 
    *          in the pattern image as well as the offset between the pattern and source values
-   * @param source an Array of Pixels for each pixel in the source image
+   * @param source an Array of RGB int values representing each pixel in the source image
+   * @param tolerance an int representing how forgiving the algorithm will be when comparing pixels
    * @param pname the name of the pattern image
    * @param sname the name of the source image
-   * @param pwidth width of the pattern image for output purposes
-   * @param pheight height of the pattern image for output purposes
+   * @param patternWidth width of the pattern image for output purposes
+   * @param patternHeight height of the pattern image for output purposes
    *
    * @return void; class's output object will be updated if there is a match
    */
   public static void compareCropped(PatternObject patternObj, int[][] source, int tolerance,
-                                    String pname, String sname, int pwidth, int pheight) {
-    int patternHeight = patternObj.pixels.length;
-    int patternWidth = patternObj.pixels[0].length;
+                                    String pname, String sname, int patternWidth, int patternHeight) {
     int sourceHeight = source.length;
     int sourceWidth = source[0].length;
 
@@ -145,8 +139,8 @@ public class Spims {
           PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][0], source[sy+(patternHeight-1)][sx], tolerance) >= 0 &&
           PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][(patternWidth-1)], 
                                   source[sy+(patternHeight-1)][sx+(patternWidth-1)], tolerance) >= 0) {
-          if (compareCroppedHelper(patternObj, source, sy, sx, tolerance)) {
-            output.add(pname, sname, pwidth, pheight, sx, sy, patternObj.offset);
+          if (compareCroppedHelper(patternObj, source, sy, sx, tolerance, patternWidth, patternHeight)) {
+            output.add(pname, sname, patternWidth, patternHeight, sx, sy, patternObj.offset);
           }
         }
       }
@@ -154,7 +148,6 @@ public class Spims {
   }
 
   /**
-   * REDO
    * The compareCroppedHelper function iterates through the pattern and source int arrays
    * and compares each corresponding pixel
    *
@@ -163,13 +156,16 @@ public class Spims {
    * @param source an array of ints representing each pixel in the source image
    * @param sy an int referring to the y index of the source array
    * @param sx an int referring to the x index of the source array
-   * @param tolerance an int representing how forgiving the algorithm will be when searching for equal pixels
+   * @param tolerance an int representing how forgiving the algorithm will be when comparing pixels
+   * @param patternWidth width of the pattern image for output purposes
+   * @param patternHeight height of the pattern image for output purposes
    *
    * @return boolean. Whether or not the two array's (and therefore images) are identical within the tolerance
    */
-  public static boolean compareCroppedHelper(PatternObject patternObj, int[][] source, int sy, int sx, int tolerance) {
-    for (int py = 0; py < patternObj.pixels.length; py++) {
-      for (int px = 0; px < patternObj.pixels[py].length; px++) {
+  public static boolean compareCroppedHelper(PatternObject patternObj, int[][] source, int sy, int sx, 
+                                             int tolerance, int patternWidth, int patternHeight) {
+    for (int py = 0; py < patternHeight; py++) {
+      for (int px = 0; px < patternWidth; px++) {
         int offset = PatternObject.isSimilar(patternObj.pixels[py][px], source[sy+py][sx+px], tolerance);
         if (offset >= 0)
           patternObj.offset += offset;
