@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 public class Spims {
 
-    //Stores matches that are found
+  //Stores matches that are found
   private static Outputter output = new Outputter();
 
     /**
@@ -27,14 +27,14 @@ public class Spims {
      * and indicitive flags telling whether inputs are directories or files
      */
     public static void main(String[] args) {
-        //TODO: REMOVE THIS
+      //TODO: REMOVE THIS
       long startTime = System.currentTimeMillis();
 
       int smallPatternTolerance = 15;
       int majorTolerance = 60;
       int smallPatternSize = 10;
 
-        //take in main method inputs and ensure they are correct and valid
+      //Take in main method inputs and ensure they are correct and valid
       Inputter inputs = new Inputter(args);
       inputs.processInputs();
 
@@ -64,7 +64,7 @@ public class Spims {
           int givenTolerance = majorTolerance;
           int outputSizeBefore = output.size();
 
-                //Use tighter tolerance for images with area less than 10
+          //Use tighter tolerance for images with area less than 10
           if ((patternWidth * patternHeight) < smallPatternSize)
             givenTolerance = smallPatternTolerance;
 
@@ -79,7 +79,7 @@ public class Spims {
         }
       }
       output.output();
-        //TODO: REMOVE THIS
+      //TODO: REMOVE THIS
       long endTime = System.currentTimeMillis();
       System.out.println("Elapsed Time: " + ((endTime - startTime) / 60000) + "' " + ((endTime - startTime) / 1000) + "\"");
     }
