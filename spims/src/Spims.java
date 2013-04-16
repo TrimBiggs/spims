@@ -29,6 +29,7 @@ public class Spims {
         int smallPatternTolerance = 15;
         int tolerance = 30;
         int gifTolerance = 45;
+        int majorTolerance = 75;
 
         //take main method inputs and ensure they are correct and valid
         Inputter inputs = new Inputter(args);
@@ -47,6 +48,7 @@ public class Spims {
 
             BufferedImage patternImg = patterns.get(curPattern);
             PatternObject patternObj = new PatternObject(inputs.generatePixels(patternImg));
+            //TODO POSSIBLY REMOVE THESE BECAUSE THEY DON'T REALLY CHANGE MUCH FOR TIME
             int patternWidth = patternImg.getWidth();
             int patternHeight = patternImg.getHeight();
 
@@ -54,25 +56,29 @@ public class Spims {
                 String curSource = sourceKeys.next();
 
                 BufferedImage sourceImg = sources.get(curSource);
+                //TODO POSSIBLY REMOVE THESE BECAUSE THEY DON'T REALLY CHANGE MUCH FOR TIME
+                int sourceWidth = sourceImg.getWidth();
+                int sourceHeight = sourceImg.getHeight();
 
                 int[][] sourcePixels = inputs.generatePixels(sourceImg);
 
-                int givenTolerance = tolerance;
+                //int givenTolerance = tolerance;
+                int givenTolerance = majorTolerance;
                 outputSizeBefore = output.size();
 
                 //TODO BEFORE FINAL SUBMIT: CHANGE THIS TO ACT LIKE FILTER
                 if ((patternWidth * patternHeight) < 10)
                     givenTolerance = smallPatternTolerance;
                 //check for gifs
-                else if (curPattern.endsWith("gif") || curSource.endsWith("gif"))
-                    givenTolerance = gifTolerance;
+                /*else if (curPattern.endsWith("gif") || curSource.endsWith("gif"))
+                    givenTolerance = gifTolerance;*/
                 
-                if (patternWidth == sourceImg.getWidth() && patternHeight == sourceImg.getHeight()) {
+                if (patternWidth == sourceWidth && patternHeight == sourceHeight) {
                     compareExact(sourcePixels, patternObj.pixels, curPattern, curSource, patternWidth, patternHeight);
                     if (output.size() == outputSizeBefore) {
                         compareNoScale(patternObj, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
                     }
-                } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
+                } else if (patternWidth < sourceWidth && patternHeight < sourceHeight){
                     compareNoScale(patternObj, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
                 }
             }
@@ -98,7 +104,7 @@ public class Spims {
     public static void compareExact(int[][] pattern, int[][] source, String pname, String sname, int pwidth, int pheight) {
         for (int i = 0; i < pattern.length; i++){
             for (int j = 0; j < pattern[i].length; j++){
-                if (!Pixel.isSimilar(pattern[i][j], source[i][j], 0)){
+                if (!PatternObject.isExactlySimilar(pattern[i][j], source[i][j])){
                     return;
                 }
             }
@@ -140,8 +146,8 @@ public class Spims {
                 //check if the first pixel of the pattern
                 //matches the given pixel of the source
                 if (PatternObject.isSimilar(pattern.pixels[0][0], source[i][j], tolerance) >= 0) {
-                    if (justCompare(pattern, source, i, j, tolerance)){
-                        output.add(pname, sname, pwidth, pheight, j, i);
+                    if (justCompare(pattern, source, i, j, tolerance)) {
+                        output.add(pname, sname, pwidth, pheight, j, i, pattern.offset);
                     }
                 }
             }
@@ -171,8 +177,10 @@ public class Spims {
                 int offset = PatternObject.isSimilar(pattern.pixels[ii][jj], source[i+ii][j+jj], tolerance);
                 if (offset >= 0)
                     pattern.offset += offset;
-                else
+                else {
+                    pattern.offset = 0;
                     return false;
+                }
             }
         }
         return true;

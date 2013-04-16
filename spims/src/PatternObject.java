@@ -17,7 +17,7 @@ public class PatternObject {
 	*	@param _image The array of Pixel RGB values that make up the image
 	* 	@return PatternObject. Return the newly created PatternObject object
 	*/
-	public PatternObject(int[][] _pixels){
+	public PatternObject(int[][] _pixels) {
 		pixels = _pixels;
 		offset = 0;
 	}
@@ -25,7 +25,19 @@ public class PatternObject {
 	public int[][] pixels;
 	public int offset;
 
-	public static int isSimilar(int x, int y, int tolerance){
+	public static boolean isExactlySimilar(int x, int y) {
+		int bx = x & 0x0000FF;
+		int gx = (x & 0x00FF00) >> 8;
+		int rx = (x & 0xFF0000) >> 16;
+
+		int by = y & 0x0000FF;
+		int gy = (y & 0x00FF00) >> 8;
+		int ry = (y & 0xFF0000) >> 16;
+
+		return (bx == by && gx == gy && rx == ry);
+	}
+
+	public static int isSimilar(int x, int y, int tolerance) {
 		int bx = x & 0x0000FF;
 		int gx = (x & 0x00FF00) >> 8;
 		int rx = (x & 0xFF0000) >> 16;
