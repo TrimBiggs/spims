@@ -11,7 +11,7 @@ import java.util.Iterator;
  *   output is printed with results.
  *
  *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
- *   @version 0.4
+ *   @version 1.0
  *   @since 1/30/2012/
  *
  */
@@ -83,7 +83,7 @@ public class Spims {
 
 
 
-  
+
   /**
    * Check to see if two images are the exact same image.
    *
@@ -96,7 +96,7 @@ public class Spims {
    *
    * @return void; class's output object will be updated if there is a match
    */
-  public static void compareExact(int[][] pattern, int[][] source, String pname, 
+  public static void compareExact(int[][] pattern, int[][] source, String pname,
                                   String sname, int patternWidth, int patternHeight) {
     for (int y = 0; y < patternHeight; y++) {
       for (int x = 0; x < patternWidth; x++) {
@@ -109,12 +109,12 @@ public class Spims {
   }
 
   /**
-   * This compareCropped function iterates through the source image and determines if the 
+   * This compareCropped function iterates through the source image and determines if the
    * RGB int values of the corners of the pattern image match the corresponding RGB int values
-   * of the source image.  The function then calls comparedCroppedHelper function, which 
-   * compares the two RGB int array of arrays and checks against the tolerance value. 
+   * of the source image.  The function then calls comparedCroppedHelper function, which
+   * compares the two RGB int array of arrays and checks against the tolerance value.
    *
-   * @param patternObj a PatternObject containing the array of ints representing each pixel 
+   * @param patternObj a PatternObject containing the array of ints representing each pixel
    *          in the pattern image as well as the offset between the pattern and source values
    * @param source an Array of RGB int values representing each pixel in the source image
    * @param tolerance an int representing how forgiving the algorithm will be when comparing pixels
@@ -137,7 +137,7 @@ public class Spims {
         if (PatternObject.isSimilar(patternObj.pixels[0][0], source[sy][sx], tolerance) >= 0 &&
           PatternObject.isSimilar(patternObj.pixels[0][(patternWidth-1)], source[sy][sx+(patternWidth-1)], tolerance) >= 0 &&
           PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][0], source[sy+(patternHeight-1)][sx], tolerance) >= 0 &&
-          PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][(patternWidth-1)], 
+          PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][(patternWidth-1)],
                                   source[sy+(patternHeight-1)][sx+(patternWidth-1)], tolerance) >= 0) {
           if (compareCroppedHelper(patternObj, source, sy, sx, tolerance, patternWidth, patternHeight)) {
             output.add(pname, sname, patternWidth, patternHeight, sx, sy, patternObj.offset);
@@ -151,7 +151,7 @@ public class Spims {
    * The compareCroppedHelper function iterates through the pattern and source int arrays
    * and compares each corresponding pixel
    *
-   * @param patternObj a PatternObject containing the array of ints representing each pixel 
+   * @param patternObj a PatternObject containing the array of ints representing each pixel
    *          in the pattern image as well as the offset between the pattern and source values
    * @param source an array of ints representing each pixel in the source image
    * @param sy an int referring to the y index of the source array
@@ -162,7 +162,7 @@ public class Spims {
    *
    * @return boolean. Whether or not the two array's (and therefore images) are identical within the tolerance
    */
-  public static boolean compareCroppedHelper(PatternObject patternObj, int[][] source, int sy, int sx, 
+  public static boolean compareCroppedHelper(PatternObject patternObj, int[][] source, int sy, int sx,
                                              int tolerance, int patternWidth, int patternHeight) {
     for (int py = 0; py < patternHeight; py++) {
       for (int px = 0; px < patternWidth; px++) {

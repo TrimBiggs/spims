@@ -12,7 +12,7 @@ import java.util.Arrays;
 * are of valid types.
 *
 *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
-*   @version 0.4
+*   @version 1.0
 *   @since 1/30/2012/
 *
 */

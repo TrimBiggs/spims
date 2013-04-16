@@ -9,7 +9,7 @@ import java.util.Set;
 *   details about a subimage match including names, dimnesions, size, and locations.
 *
 *   @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
-*   @version 0.4
+*   @version 1.0
 *   @since 1/30/2012/
 */
 class MatchData{

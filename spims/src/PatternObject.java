@@ -6,7 +6,7 @@ import java.io.*;
 * It has comparison functions to determine if RGB int values match.
 *
 * @author Corey Hanson, Tim Briggs, Reed Lockwood, Wen Cao
-*	@version 0.4
+*	@version 1.0
 *	@since 1/30/2012/
 *
 */
@@ -17,7 +17,7 @@ public class PatternObject {
 	*
 	* @param pixels The RGB int values that make up an image
 	* @param offset The sum of all difference in RGB values between the pattern
-	*               image and source image. 
+	*               image and source image.
 	*/
 	public int[][] pixels;
 	public int offset;
@@ -36,7 +36,7 @@ public class PatternObject {
 	/**
 	*	Compares two RGB int values to see if they are the exact same value
 	*
-	*	@param p The RGB int value of a pixel from the pattern image 
+	*	@param p The RGB int value of a pixel from the pattern image
 	* @param s The RGB int value of a pixel from the source image
 	* @return boolean. Return true if the RGB values match exactly
 	*/
@@ -47,10 +47,10 @@ public class PatternObject {
 	/**
 	*	Compares two RGB int values to see if they are the exact same value
 	*
-	*	@param p The RGB int value of a pixel from the pattern image 
+	*	@param p The RGB int value of a pixel from the pattern image
 	* @param s The RGB int value of a pixel from the source image
 	* @param tol The acceptable difference between the two RGB int values p and s
-	* @return int. Return the positive difference between p and s if within the tolerance. 
+	* @return int. Return the positive difference between p and s if within the tolerance.
 	*              Otherwise return -1.
 	*/
 	public static int isSimilar(int p, int s, int tol) {
