@@ -32,7 +32,7 @@ public class Spims {
         int smallPatternTolerance = 15;
         int tolerance = 30;
         int gifTolerance = 45;
-        int majorTolerance = 60;
+        int majorTolerance = 75;
 
         //take main method inputs and ensure they are correct and valid
         Inputter inputs = new Inputter(args);
