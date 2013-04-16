@@ -19,6 +19,7 @@ class MatchData{
     public int height;
     public int x;
     public int y;
+    public int offset;
     public int size;
     public int x2;
     public int y2;
@@ -34,13 +35,14 @@ class MatchData{
     *   @param _x The x location of the upper left pixel in the source image where the match occurs
     *   @param _y The y location of the upper left pixel in the source image where the match occurs
     */
-    public MatchData(String _pat, String _src, int _w, int _h, int _x, int _y){
+    public MatchData(String _pat, String _src, int _w, int _h, int _x, int _y, int _offset){
         pattern = _pat;
         source = _src;
         width = _w;
         height = _h;
         x = _x;
         y = _y;
+        offset = _offset;
         //FENCEPOSTING?
         size = (width + 1) * (height + 1);
         x2 = x + width;
@@ -66,6 +68,7 @@ class MatchData{
 */
 public class Outputter{
     private ArrayList<MatchData> myMatches;
+    private int maxAllowableTolerance = 50;
 
     /**
     *   Constructor for class Outputter. Takes no arguments, but
@@ -86,8 +89,10 @@ public class Outputter{
     *   @param _y The y location of the upper left pixel in the source image where the match occurs
     */
     public void add(String _pat, String _src, int _w, int _h, int _x, int _y){
-        myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y));
-        //System.out.println("adding");
+        myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y, 0));
+    }
+    public void add(String _pat, String _src, int _w, int _h, int _x, int _y, int _offset){
+        myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y, _offset));
     }
 
     /**
@@ -106,13 +111,17 @@ public class Outputter{
     */
     public void filter(){
         //compare each match to every match that comes after it
-        ArrayList badIndexes = new ArrayList();
-        for(int i = 0; i < myMatches.size(); i++) {
-            MatchData first = myMatches.get(i);
-            if (!badIndexes.contains(i)){
-                for(int j = i+1; j < myMatches.size(); j++) {
-                    MatchData second = myMatches.get(j);
-                    if(first.pattern.equals(second.pattern) && first.source.equals(second.source)){
+        ArrayList<Integer> badIndexes = new ArrayList<Integer>();
+        for(int matchIndex = 0; matchIndex < myMatches.size(); matchIndex++) {
+            MatchData first = myMatches.get(matchIndex);
+            first.offset = (first.offset / (first.width * first.height));
+            if (first.offset > maxAllowableTolerance) {
+                badIndexes.add(matchIndex);
+            }
+            else if (!badIndexes.contains(matchIndex)){
+                for(int nextMatchIndex = matchIndex+1; nextMatchIndex < myMatches.size(); nextMatchIndex++) {
+                    MatchData second = myMatches.get(nextMatchIndex);
+                    if(first.pattern.equals(second.pattern) && first.source.equals(second.source)) {
 
                         //find the (possibly non-existant) rectangle where the two matches overlap
                         int width = Math.min(first.x2, second.x2) - Math.max(first.x, second.x) + 1;
@@ -120,18 +129,18 @@ public class Outputter{
                         if(width > 0 && height > 0){
                             float crossover = (float)(width * height);
                             //is it greater than half the size of the first match?
-                            if(crossover > .5 * ((float) first.size)){
+                            if(crossover > .5 * ((float) first.size)) {
                                 //get rid of the first match
-                                if (!badIndexes.contains(j))
-                                    badIndexes.add(j);
+                                if (!badIndexes.contains(nextMatchIndex))
+                                    badIndexes.add(nextMatchIndex);
                             }
                         }
                     }
                 }
             }
         }
-        Set set = new HashSet(badIndexes);
-        for(int i = myMatches.size() - 1; i >= 0; i--){
+        Set<Integer> set = new HashSet<Integer>(badIndexes);
+        for(int i = myMatches.size() - 1; i >= 0; i--) {
             if (badIndexes.contains(i))
                 myMatches.remove(i);
         }
@@ -167,6 +176,7 @@ public class Outputter{
         while(i < myMatches.size()){
             System.out.println(myMatches.get(i).toString());
             i++;
+            //System.out.println(myMatches.get(i).offset);
         }
 /*        for(Iterator<MatchData> iter = myMatches.iterator(); iter.hasNext();){
             if(!firstline){

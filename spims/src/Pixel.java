@@ -61,6 +61,11 @@ public class Pixel {
 		return (Math.abs(rx - ry) <= tolerance) &&
 		(Math.abs(gx - gy) <= tolerance) &&
 		(Math.abs(bx - by) <= tolerance);
+
+		/*if ((rDiff <= tolerance) && (gDiff <= tolerance) && (bDiff <= tolerance))
+			return (rDiff + gDiff + bDiff);
+		else
+			return -1;*/
 	}
 
 

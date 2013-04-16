@@ -1,4 +1,4 @@
-import java.io.*; //??? not sure
+import java.io.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.HashMap;
@@ -18,7 +18,8 @@ import java.util.Iterator;
 
 public class Spims {
 
-    private static Outputter output = new Outputter();
+    //Stores matches that are found
+  private static Outputter output = new Outputter();
 
     /**
      * Main method of class Spims. Runs the program functions.
@@ -26,70 +27,61 @@ public class Spims {
      * and indicitive flags telling whether inputs are directories or files
      */
     public static void main(String[] args) {
-        int smallPatternTolerance = 15;
-        int tolerance = 30;
-        int gifTolerance = 45;
+        //TODO: REMOVE THIS
+      long startTime = System.currentTimeMillis();
 
-        //take main method inputs and ensure they are correct and valid
-        Inputter inputs = new Inputter(args);
-        inputs.processInputs();
+      int smallPatternTolerance = 15;
+      int majorTolerance = 60;
+      int smallPatternSize = 10;
 
-        HashMap<String, BufferedImage> patterns = inputs.getPatterns();
-        HashMap<String, BufferedImage> sources = inputs.getSources();
+        //take in main method inputs and ensure they are correct and valid
+      Inputter inputs = new Inputter(args);
+      inputs.processInputs();
 
-        int outputSizeBefore;
+      HashMap<String, BufferedImage> patterns = inputs.getPatterns();
+      HashMap<String, BufferedImage> sources = inputs.getSources();
 
-        Iterator<String> patternKeys = patterns.keySet().iterator();
+      Iterator<String> patternKeys = patterns.keySet().iterator();
 
-        while(patternKeys.hasNext()){
-            String curPattern = patternKeys.next();
-            Iterator<String> sourceKeys = sources.keySet().iterator();
+      while(patternKeys.hasNext()){
+        String curPattern = patternKeys.next();
+        Iterator<String> sourceKeys = sources.keySet().iterator();
 
-            BufferedImage patternImg = patterns.get(curPattern);
-            int[][] patternPixels = inputs.generatePixels(patternImg);
+        BufferedImage patternImg = patterns.get(curPattern);
+        PatternObject patternObj = new PatternObject(inputs.generatePixels(patternImg));
+        int patternWidth = patternImg.getWidth();
+        int patternHeight = patternImg.getHeight();
 
-            while(sourceKeys.hasNext()){
-                String curSource = sourceKeys.next();
+        while(sourceKeys.hasNext()){
+          String curSource = sourceKeys.next();
 
-                BufferedImage sourceImg = sources.get(curSource);
+          BufferedImage sourceImg = sources.get(curSource);
+          int sourceWidth = sourceImg.getWidth();
+          int sourceHeight = sourceImg.getHeight();
 
-                int[][] sourcePixels = inputs.generatePixels(sourceImg);
+          int[][] sourcePixels = inputs.generatePixels(sourceImg);
 
-                int patternWidth = patternImg.getWidth();
-                int patternHeight = patternImg.getHeight();
+          int givenTolerance = majorTolerance;
+          int outputSizeBefore = output.size();
 
-                outputSizeBefore = output.size();
+                //Use tighter tolerance for images with area less than 10
+          if ((patternWidth * patternHeight) < smallPatternSize)
+            givenTolerance = smallPatternTolerance;
 
-                int givenTolerance = tolerance;
-
-                //check for gifs
-                //TODO BEFORE FINAL SUBMIT: CHANGE THIS TO ACT LIKE FILTER
-                if ((patternWidth * patternHeight) < 10)
-                    givenTolerance = smallPatternTolerance;
-                    //check for gifs
-                else if (curPattern.endsWith("gif") || curSource.endsWith("gif"))
-                    givenTolerance = gifTolerance;
-
-                if (patternWidth == sourceImg.getWidth() && patternHeight == sourceImg.getHeight()) {
-                    //Check if any results, if not call compareScaleUp()
-                    compareExact(sourcePixels, patternPixels, curPattern, curSource, patternWidth, patternHeight);
-
-                    //TODO: Remove this section
-                    /*if (output.size() == outputSizeBefore) {
-                        compareNoScale(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
-                        System.out.println("Output size is now the same 1");
-                        if (output.size() == outputSizeBefore && ! (patternWidth == 1 && patternHeight == 1)) {
-                            System.out.println("Output size is now the same 2");
-                            compareScaleUp(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
-                        }
-                    }*/
-
-                } else if (patternImg.getWidth() < sourceImg.getWidth() && patternImg.getHeight() < sourceImg.getHeight()){
-                    compareNoScale(patternPixels, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
-                }
+          if (patternWidth == sourceWidth && patternHeight == sourceHeight) {
+            compareExact(sourcePixels, patternObj.pixels, curPattern, curSource, patternWidth, patternHeight);
+            if (output.size() == outputSizeBefore) {
+              compareCropped(patternObj, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
             }
+          } else if (patternWidth < sourceWidth && patternHeight < sourceHeight){
+            compareCropped(patternObj, sourcePixels, givenTolerance, curPattern, curSource, patternWidth, patternHeight);
+          }
         }
-        output.output();
+      }
+      output.output();
+        //TODO: REMOVE THIS
+      long endTime = System.currentTimeMillis();
+      System.out.println("Elapsed Time: " + ((endTime - startTime) / 60000) + "' " + ((endTime - startTime) / 1000) + "\"");
     }
 
 
@@ -108,14 +100,14 @@ public class Spims {
     * @return void; class's output object will be updated if there is a match
     */
     public static void compareExact(int[][] pattern, int[][] source, String pname, String sname, int pwidth, int pheight) {
-        for (int i = 0; i < pattern.length; i++){
-            for (int j = 0; j < pattern[i].length; j++){
-                if (!Pixel.isSimilar(pattern[i][j], source[i][j], 0)){
-                    return;
-                }
-            }
+      for (int y = 0; y < pattern.length; y++) {
+        for (int x = 0; x < pattern[y].length; x++) {
+          if (!PatternObject.isExactlySimilar(pattern[y][x], source[y][x])) {
+            return;
+          }
         }
-        output.add(pname, sname, pwidth, pheight, 0, 0);
+      }
+      output.add(pname, sname, pwidth, pheight, 0, 0);
     }
 
     /**
@@ -133,58 +125,54 @@ public class Spims {
     *
     * @return void; class's output object will be updated if there is a match
     */
-    //TODO Implement
-    //Method to check if patternis a cropped version of source
-    public static void compareNoScale(int[][] pattern, int[][] source, int tolerance,
-                                       String pname, String sname, int pwidth, int pheight) {
-        //setup return string
-        String strResult = "false";
-        int patternLengthi = pattern.length;
-        int patternLengthj = pattern[0].length;
-        int sourceLengthi = source.length;
-        int sourceLengthj = source[0].length;
-        int[] res;
+    public static void compareCropped(PatternObject patternObj, int[][] source, int tolerance,
+     String pname, String sname, int pwidth, int pheight) {
+      int patternHeight = patternObj.pixels.length;
+      int patternWidth = patternObj.pixels[0].length;
+      int sourceHeight = source.length;
+      int sourceWidth = source[0].length;
 
-        //go through each row and each column
-        //TODO: Maybe computer the (source.length - pattern.length) things outside
-        for (int i = 0; i <= (sourceLengthi - patternLengthi); i++){
-            for (int j = 0; j <= (sourceLengthj - patternLengthj); j++){
-                //check if the first pixel of the pattern
-                //matches the given pixel of the source
-                if (Pixel.isSimilar(pattern[0][0], source[i][j], tolerance)) {
-                    if (justCompare(pattern, source, i, j, tolerance)){
-                        output.add(pname, sname, pwidth, pheight, j, i);
-                    }
-                }
+      for (int sy = 0; sy <= (sourceHeight - patternHeight); sy++) {
+        for (int sx = 0; sx <= (sourceWidth - patternWidth); sx++) {
+          //check if the corners of the pattern
+          //match the corresponding pixels of the source
+          if (PatternObject.isSimilar(patternObj.pixels[0][0], source[sy][sx], tolerance) >= 0 &&
+            PatternObject.isSimilar(patternObj.pixels[0][(patternWidth-1)], source[sy][sx+(patternWidth-1)], tolerance) >= 0 &&
+            PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][0], source[sy+(patternHeight-1)][sx], tolerance) >= 0 &&
+            PatternObject.isSimilar(patternObj.pixels[(patternHeight-1)][(patternWidth-1)], source[sy+(patternHeight-1)][sx+(patternWidth-1)], tolerance) >= 0) {
+            if (compareCroppedHelper(patternObj, source, sy, sx, tolerance)) {
+              output.add(pname, sname, pwidth, pheight, sx, sy, patternObj.offset);
             }
+          }
         }
-        //if we can't find anything, return false
-        return;
+      }
     }
 
     /**
-    * This function compares array of arrays of Pixels against another one of exact same
-    * rows and columns
+    * REDO
+    * The compareCroppedHelper function iterates through the pattern and source int arrays
+    * and compares each corresponding pixel
     *
     * @param pattern an Array of Pixels for each pixel in the pattern image
     * @param source an Array of Pixels for each pixel in the source image
-    * @param i
-    * @param j
+    * @param sy an int referring to the y index of the source array
+    * @param sx an int referring to the x index of the source array
     * @param tolerance and int representing how forgiving the algorithm will be when searching for equal pixels
     *
     * @return boolean. Whether or not the two array's (and therefore images) are identical
     */
-    public static boolean justCompare(int[][] pattern, int[][] source, int i, int j, int tolerance) {
-        //go through each row and column of the pattern image
-        int[] result;
-        for (int ii = 0; ii < pattern.length; ii++){
-            for (int jj = 0; jj < pattern[ii].length; jj++){
-                //check if the pattern and source match
-                if (!(Pixel.isSimilar(pattern[ii][jj], source[i+ii][j+jj], tolerance))) {
-                    return false;
-                }
-            }
+    public static boolean compareCroppedHelper(PatternObject patternObj, int[][] source, int sy, int sx, int tolerance) {
+      for (int py = 0; py < patternObj.pixels.length; py++) {
+        for (int px = 0; px < patternObj.pixels[py].length; px++) {
+          int offset = PatternObject.isSimilar(patternObj.pixels[py][px], source[sy+py][sx+px], tolerance);
+          if (offset >= 0)
+            patternObj.offset += offset;
+          else {
+            patternObj.offset = 0;
+            return false;
+          }
         }
-        return true;
+      }
+      return true;
     }
-}
+  }
