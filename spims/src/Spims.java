@@ -26,10 +26,13 @@ public class Spims {
      * and indicitive flags telling whether inputs are directories or files
      */
     public static void main(String[] args) {
+        //TODO: REMOVE THIS
+        long startTime = System.currentTimeMillis();
+
         int smallPatternTolerance = 15;
         int tolerance = 30;
         int gifTolerance = 45;
-        int majorTolerance = 75;
+        int majorTolerance = 60;
 
         //take main method inputs and ensure they are correct and valid
         Inputter inputs = new Inputter(args);
@@ -84,6 +87,9 @@ public class Spims {
             }
         }
         output.output();
+        //TODO: REMOVE THIS
+        long endTime = System.currentTimeMillis();
+        System.out.println("Elapsed Time: " + ((endTime - startTime) / 60000) + "' " + ((endTime - startTime) / 1000) + "\"");
     }
 
 

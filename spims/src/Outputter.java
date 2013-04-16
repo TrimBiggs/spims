@@ -57,13 +57,14 @@ class MatchData{
     */
     public String toString(){
         double confidence;
+        double conf = (offset / (width * height));
         if (offset == 0)
             confidence = 100;
         else
             confidence = (((offset / (width * height * 256 * 3)) - 100) * -1); 
         return new String("" + pattern + " matches " + source +
-                      " at " + width + "x" + height + "+" + x + "+" + y + 
-                      " with confidence " + confidence + "%");
+                      " at " + width + "x" + height + "+" + x + "+" + y +
+                      "\nGeneral Conf = " + conf);
     }
 }
 
