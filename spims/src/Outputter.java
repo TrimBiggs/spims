@@ -20,7 +20,7 @@ class MatchData{
     public int x;
     public int y;
     public int offset;
-    public int size;
+    public int area;
     public int x2;
     public int y2;
 
@@ -43,8 +43,7 @@ class MatchData{
         x = _x;
         y = _y;
         offset = _offset;
-        //FENCEPOSTING?
-        size = (width + 1) * (height + 1);
+        area = width * height;
         x2 = x + width;
         y2 = y + height;
     }
@@ -73,6 +72,8 @@ public class Outputter{
     /**
     *   Constructor for class Outputter. Takes no arguments, but
     *   initializes an empty ArrayList of type MatchData.
+    *
+    *   @return void; Creates a new ArrayList of MatchData
     */
     public Outputter(){
         myMatches = new ArrayList<MatchData>();
@@ -91,6 +92,18 @@ public class Outputter{
     public void add(String _pat, String _src, int _w, int _h, int _x, int _y){
         myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y, 0));
     }
+
+    /**
+    *   Adds a new MatchData object to the class's collection of MatchData.
+    *
+    *   @param _pat The name of the pattern image
+    *   @param _src The name of the source image
+    *   @param _w The width of the match
+    *   @param _h The height of the match
+    *   @param _x The x location of the upper left pixel in the source image where the match occurs
+    *   @param _y The y location of the upper left pixel in the source image where the match occurs
+    *   @param _offset The sum of all differences between the RGB int values of the pattern and source images
+    */
     public void add(String _pat, String _src, int _w, int _h, int _x, int _y, int _offset){
         myMatches.add(new MatchData(_pat, _src, _w, _h, _x, _y, _offset));
     }
@@ -105,34 +118,44 @@ public class Outputter{
     }
 
     //THIS FUNCTION ASSUMES BOTH FOUND PATTERNS ARE THE SAME SIZE. UPDATE LATER
-    //FENCEPOSTING on width and height?
     /**
-    *   Remove duplicate matches that overlap eachother by 50%.
+    *   Remove matches that are outside of the tolerance.
+    *   Remove duplicate matches that overlap one another by at least 50%.
+    *
+    *   @return void; Bad image matches will be removed from the output array
     */
     public void filter(){
-        //compare each match to every match that comes after it
+        //compare each match to every following match that has been saved
         ArrayList<Integer> badIndexes = new ArrayList<Integer>();
         for(int matchIndex = 0; matchIndex < myMatches.size(); matchIndex++) {
             MatchData first = myMatches.get(matchIndex);
-            first.offset = (first.offset / (first.width * first.height));
+            first.offset = (first.offset / first.area);
+            //Remove match if it is not within the proper allowed tolerance
             if (first.offset > maxAllowableTolerance) {
                 badIndexes.add(matchIndex);
             }
-            else if (!badIndexes.contains(matchIndex)){
-                for(int nextMatchIndex = matchIndex+1; nextMatchIndex < myMatches.size(); nextMatchIndex++) {
+            else if (!badIndexes.contains(matchIndex)) {
+                for (int nextMatchIndex = matchIndex+1; nextMatchIndex < myMatches.size(); nextMatchIndex++) {
                     MatchData second = myMatches.get(nextMatchIndex);
-                    if(first.pattern.equals(second.pattern) && first.source.equals(second.source)) {
-
-                        //find the (possibly non-existant) rectangle where the two matches overlap
+                    if (first.pattern.equals(second.pattern) && first.source.equals(second.source)) {
+                        //find the possible rectangle where the two matches overlap
                         int width = Math.min(first.x2, second.x2) - Math.max(first.x, second.x) + 1;
                         int height = Math.min(first.y2, second.y2) - Math.max(first.y, second.y) + 1;
-                        if(width > 0 && height > 0){
+                        if (width > 0 && height > 0){
                             float crossover = (float)(width * height);
-                            //is it greater than half the size of the first match?
-                            if(crossover > .5 * ((float) first.size)) {
+                            second.offset = second.offset / second.area;
+                            //is it greater than half the area of the first match?
+                            if (crossover > .5 * ((float) first.area)) {
                                 //get rid of the first match
-                                if (!badIndexes.contains(nextMatchIndex))
+                                if (first.offset < second.offset) {
+                                    if (!badIndexes.contains(matchIndex)) {
+                                        badIndexes.add(matchIndex);
+                                        break;
+                                    }
+                                }
+                                else if (!badIndexes.contains(nextMatchIndex)) {
                                     badIndexes.add(nextMatchIndex);
+                                }
                             }
                         }
                     }
