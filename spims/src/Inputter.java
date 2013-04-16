@@ -20,16 +20,16 @@ public class Inputter{
   private String s_loc;
 
   private HashMap<String, BufferedImage> patternImages =
-  new HashMap<String, BufferedImage>();
+    new HashMap<String, BufferedImage>();
   private HashMap<String, BufferedImage> sourceImages =
-  new HashMap<String, BufferedImage>();
+    new HashMap<String, BufferedImage>();
 
   private final HashSet<String> VALID_P_FLAGS = new HashSet<String>(
     Arrays.asList(new String[] {"-p", "-pdir", "--pdir"})
-    );
+  );
   private final HashSet<String> VALID_S_FLAGS = new HashSet<String>(
     Arrays.asList(new String[] {"-s", "-sdir", "--sdir"})
-    );
+  );
   private final ImageFilter FILTER = new ImageFilter();
 
     /**
@@ -122,13 +122,13 @@ public class Inputter{
         for(File f : patterns){
           addToPatterns(f);
         }
-      } else if(!pattern.isDirectory() && p_flag.equals("-p")){
+      }else if(!pattern.isDirectory() && p_flag.equals("-p")){
         if(FILTER.accept(pattern)){
           addToPatterns(pattern);
         } else {
           handleInvalidFiles("pattern");
         }
-      } else {
+      }else {
         System.err.println(
           "Pattern input does not match pattern flag. Program terminating"
         );
@@ -187,13 +187,13 @@ public class Inputter{
         for(File f : sources){
           addToSources(f);
         }
-      } else if(!source.isDirectory() && s_flag.equals("-s")){
+      }else if(!source.isDirectory() && s_flag.equals("-s")){
         if(FILTER.accept(source)){
           addToSources(source);
         } else {
           handleInvalidFiles("source");
         }
-      } else {
+      }else {
         System.err.println(
           "Source input does not match source flag. Program terminating."
           );
